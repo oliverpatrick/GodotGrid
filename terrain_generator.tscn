@@ -1,0 +1,31 @@
+[gd_scene load_steps=7 format=3 uid="uid://yaiwisaay14y"]
+
+[ext_resource type="Script" uid="uid://cnkojmcv7afbe" path="res://terrain_generator.gd" id="1_wc7r7"]
+[ext_resource type="PackedScene" uid="uid://b5sbv81foeoy2" path="res://tree.tscn" id="2_vg2ls"]
+[ext_resource type="PackedScene" uid="uid://tvjj76iceovt" path="res://player.tscn" id="2_y7rda"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wc7r7"]
+sky_top_color = Color(0.357247, 0.524792, 0.750752, 1)
+sky_horizon_color = Color(0.704654, 0.73879, 0.78628, 1)
+ground_horizon_color = Color(0.704654, 0.73879, 0.78628, 1)
+
+[sub_resource type="Sky" id="Sky_7468f"]
+sky_material = SubResource("ProceduralSkyMaterial_wc7r7")
+
+[sub_resource type="Environment" id="Environment_y7rda"]
+background_mode = 2
+sky = SubResource("Sky_7468f")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="TerrainGenerator" type="Node3D"]
+script = ExtResource("1_wc7r7")
+tree_scene = ExtResource("2_vg2ls")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_y7rda")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+shadow_enabled = true
+
+[node name="Player" parent="." instance=ExtResource("2_y7rda")]

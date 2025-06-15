@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://tvjj76iceovt"]
+
+[ext_resource type="Script" uid="uid://dsyxsvymt06is" path="res://player.gd" id="1_4flbx"]
+[ext_resource type="Script" uid="uid://cndhhjd00rhn4" path="res://camera_controller.gd" id="2_onrkg"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sh265"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_4flbx")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_sh265")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_4flbx")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.989468, 0.144753, 0, -0.144753, 0.989468, 0, 3, 4)
+script = ExtResource("2_onrkg")
+
+[node name="CutTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[connection signal="timeout" from="CutTimer" to="." method="_on_cut_timer_timeout"]
