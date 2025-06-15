@@ -21,4 +21,4 @@ project/assembly_name="ClaudeCodeTranslation"
 
 [global_group]
 
-Trees=""
+Interactable="Interactable object"

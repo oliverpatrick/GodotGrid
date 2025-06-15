@@ -190,6 +190,43 @@ func reconstruct_path(end_node: PathNode) -> Array:
 		current_node = current_node.parent
 	
 	return path
+	
+func find_nearest_available_tile(target_world_pos: Vector3, seeker_world_pos: Vector3) -> Vector3:
+	"""
+	Given a target tile (e.g. an interactable), return the world position of the nearest
+	adjacent walkable tile for the seeker to move to.
+	"""
+	var target_grid = world_to_grid(target_world_pos)
+	var seeker_grid = world_to_grid(seeker_world_pos)
+
+	var nearest_tile = null
+	var shortest_distance := INF
+
+	for direction in DIRECTIONS:
+		var neighbor_grid = target_grid + direction
+		
+		if not is_valid_grid_pos(neighbor_grid):
+			continue
+		if not is_tile_walkable(neighbor_grid.x, neighbor_grid.y):
+			continue
+
+		# Optional: Avoid picking the same tile as the seeker
+		if neighbor_grid == seeker_grid:
+			continue
+
+		# Check distance to seeker
+		var dist = seeker_grid.distance_to(neighbor_grid)
+		if dist < shortest_distance:
+			shortest_distance = dist
+			nearest_tile = neighbor_grid
+
+	if nearest_tile != null:
+		return grid_to_world(nearest_tile)
+	
+	# If no adjacent tile found
+	print("No adjacent walkable tile found near ", target_grid)
+	return target_world_pos  # Fallback
+
 
 # Utility function for debugging
 func print_path(path: Array):

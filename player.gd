@@ -91,9 +91,12 @@ func _physics_process(delta):
 			print(rotation.y)
 			# Optional: Face movement direction
 			if direction.length() > 0.1:
+				#var target_rotation = atan2(direction.x, direction.z)
+				##rig.rotation.y = lerp_angle(rotation.y, target_rotation, delta * 8.0)
+				#rig.rotation.y = rotation.y
 				var target_rotation = atan2(direction.x, direction.z)
-				#rig.rotation.y = lerp_angle(rotation.y, target_rotation, delta * 8.0)
-				rig.rotation.y = rotation.y
+				rig.rotation.y = lerp_angle(rig.rotation.y, target_rotation, delta * 10.0)
+
 		
 		move_and_slide()
 

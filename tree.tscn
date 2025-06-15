@@ -5,31 +5,38 @@ albedo_color = Color(0.405838, 0.16088, 0, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_brfkd"]
 material = SubResource("StandardMaterial3D_uc1xx")
-top_radius = 0.3
-bottom_radius = 0.3
+top_radius = 0.1
+bottom_radius = 0.2
 radial_segments = 7
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nnvrw"]
-albedo_color = Color(0.0862745, 0.572549, 0, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_brfkd"]
+albedo_color = Color(0.00401721, 0.489996, 0, 1)
 
-[sub_resource type="SphereMesh" id="SphereMesh_gvmkm"]
-material = SubResource("StandardMaterial3D_nnvrw")
-radius = 1.0
-height = 2.0
+[sub_resource type="CylinderMesh" id="CylinderMesh_nnvrw"]
+material = SubResource("StandardMaterial3D_brfkd")
+top_radius = 0.0
+bottom_radius = 0.75
+height = 1.25
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_d2g23"]
 size = Vector3(1, 2, 1)
 
-[node name="Tree" type="StaticBody3D" groups=["Trees"]]
+[node name="Tree" type="StaticBody3D" groups=["Interactable"]]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CylinderMesh_brfkd")
 skeleton = NodePath("")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D"]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-mesh = SubResource("SphereMesh_gvmkm")
+mesh = SubResource("CylinderMesh_nnvrw")
+skeleton = NodePath("")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.553072, 0)
+mesh = SubResource("CylinderMesh_nnvrw")
+skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

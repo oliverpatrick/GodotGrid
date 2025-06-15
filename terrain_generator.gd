@@ -11,7 +11,7 @@ extends Node3D
 
 @export var tree_scene: PackedScene
 @export var tree_density: float = 0.05  # ~5% of tiles get a tree
-
+var pathfinder: Pathfinder
 
 var noise: FastNoiseLite
 var mesh_instances: Array = []
@@ -240,7 +240,7 @@ func spawn_tree_on_tile(tile):
 
 	var tree_instance = tree_scene.instantiate()
 	tree_instance.position = tile.world_position
-	tree_instance.add_to_group("Trees")
+	tree_instance.add_to_group("Interactable")
 	add_child(tree_instance)
 
 	# Optional: mark tile as blocked
