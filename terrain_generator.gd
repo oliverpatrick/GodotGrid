@@ -60,18 +60,6 @@ func clear_existing_meshes():
 			instance.queue_free()
 	mesh_instances.clear()
 
-#func create_terrain_tiles():
-	#var tiles_created = 0
-	#var tiles_failed = 0
-	#
-	#for y in range(terrain_height):
-		#for x in range(terrain_width):
-			#if create_single_tile(x, y):
-				#tiles_created += 1
-			#else:
-				#tiles_failed += 1
-	#
-	#debug_print("Successfully created %d tiles, failed %d" % [tiles_created, tiles_failed])
 func create_terrain_tiles():
 	var tiles_created = 0
 	var tiles_failed = 0
@@ -81,7 +69,6 @@ func create_terrain_tiles():
 			if create_single_tile(x, y):
 				tiles_created += 1
 
-				# Attempt to spawn tree after successful tile creation
 				if tile_data[x][y].walkable and randf() < tree_density:
 					spawn_tree_on_tile(tile_data[x][y])
 			else:
