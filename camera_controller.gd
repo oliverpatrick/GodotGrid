@@ -1,3 +1,4 @@
+# camera.gd - Improved version with better debugging
 extends Camera3D
 
 @export var distance: float = 20.0
@@ -7,7 +8,7 @@ extends Camera3D
 @export var scroll_zoom_speed: float = 2.0
 @export var min_distance: float = 5.0
 @export var max_distance: float = 25.0
-@export var follow_smoothness: float = 5.0  # Optional for smoothing
+@export var follow_smoothness: float = 5.0
 
 @onready var terrain = get_parent().get_parent()
 @onready var player = get_parent()
@@ -22,13 +23,11 @@ func _ready():
 	position_camera(true)
 
 func _process(delta):
-	# Rotate left/right
 	if Input.is_action_pressed("ui_left"):
 		angle -= rotation_speed * delta
 	elif Input.is_action_pressed("ui_right"):
 		angle += rotation_speed * delta
 
-	# Zoom in/out via keys
 	if Input.is_action_pressed("ui_up"):
 		distance = max(min_distance, distance - zoom_speed * delta)
 	elif Input.is_action_pressed("ui_down"):
@@ -37,13 +36,11 @@ func _process(delta):
 	position_camera(false, delta)
 
 func _unhandled_input(event):
-	# Zoom using mouse scroll
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			distance = max(min_distance, distance - scroll_zoom_speed)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			distance = min(max_distance, distance + scroll_zoom_speed)
-		
 		elif event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 			handle_mouse_click(event.position)
 
@@ -64,6 +61,7 @@ func position_camera(force: bool = false, delta := 0.0):
 	look_at(player.global_position, Vector3.UP)
 
 func handle_mouse_click(mouse_pos: Vector2):
+	print("=== Mouse Click Debug ===")
 	var from = project_ray_origin(mouse_pos)
 	var to = from + project_ray_normal(mouse_pos) * 1000
 	var space_state = get_world_3d().direct_space_state
@@ -74,21 +72,43 @@ func handle_mouse_click(mouse_pos: Vector2):
 	
 	var result = space_state.intersect_ray(query)
 	
+	# First check for interactable objects (trees)
 	if result and result.collider.is_in_group("Interactable"):
-		print("Clicked on tree at:", result.collider.global_position)
-		var move_to_pos = player.pathfinder.find_nearest_available_tile(result.collider.global_position, player.global_position)
+		print("Clicked on interactable at:", result.collider.global_position)
+		print("Player position:", player.global_position)
+		
+		# Find nearest walkable tile to the tree
+		var move_to_pos = player.pathfinder.find_nearest_available_tile(
+			result.collider.global_position, 
+			player.global_position
+		)
+		
+		print("Nearest available tile:", move_to_pos)
+		
+		# Check if we got a valid position
+		if move_to_pos == result.collider.global_position:
+			print("WARNING: No adjacent walkable tile found!")
+			return
+		
+		# Find path to that position
 		var path = player.pathfinder.find_path(player.global_position, move_to_pos)
-
+		print("Path found with", path.size(), "waypoints")
+		
 		if path.size() > 0:
-			player.call("move_to", move_to_pos)  # Assuming your player can follow a path
-			#player.call("start_cutting_tree", result.collider)
+			print("Starting movement to tree...")
+			update_tile_indicator(move_to_pos)
+			player.call("move_to", move_to_pos)
+			
+			# Wait until player reaches destination before starting tree cutting
+			await player.movement_finished
+			
+			print("Player reached tree, starting cutting...")
+			player.call("start_cutting_tree", result.collider)
 		else:
-			print("No path found to interactable")
-		#player.call("move_to", result.collider.global_position)
-		#player.call("start_cutting_tree", result.collider)
-		update_tile_indicator(result.collider.global_position)
+			print("ERROR: No path found to tree!")
 		return
 	
+	# Handle regular ground clicks
 	var plane = Plane(Vector3.UP, 0)
 	var hit = plane.intersects_ray(from, to)
 	
