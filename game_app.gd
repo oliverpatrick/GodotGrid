@@ -52,6 +52,10 @@ func _ready() -> void:
 	click_to_move.system_message.connect(local_system_message.emit)
 	click_to_move.system_message.connect(hud.add_system_message)
 	click_to_move.entity_clicked.connect(interaction_controller.interact)
+	var automatic_email := OS.get_environment("MVP_EMAIL")
+	var automatic_password := OS.get_environment("MVP_PASSWORD")
+	if not automatic_email.is_empty() and not automatic_password.is_empty():
+		_on_login_submitted.call_deferred(automatic_email, automatic_password)
 
 func _on_login_submitted(email: String, password: String) -> void:
 	auth_client.login(auth_url, email, password)
