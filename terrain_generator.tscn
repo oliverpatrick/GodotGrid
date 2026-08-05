@@ -1,6 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://yaiwisaay14y"]
+[gd_scene load_steps=8 format=3 uid="uid://yaiwisaay14y"]
 
-[ext_resource type="Script" uid="uid://cnkojmcv7afbe" path="res://terrain_generator.gd" id="1_wc7r7"]
+[ext_resource type="Script" path="res://game_app.gd" id="1_wc7r7"]
+[ext_resource type="Script" path="res://network/auth_client.gd" id="2_auth"]
+[ext_resource type="Script" path="res://network/network_client.gd" id="3_network"]
+[ext_resource type="PackedScene" path="res://ui/login_screen.tscn" id="4_login"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wc7r7"]
 sky_top_color = Color(0.357247, 0.524792, 0.750752, 1)
@@ -24,3 +27,11 @@ environment = SubResource("Environment_y7rda")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 shadow_enabled = true
+
+[node name="AuthClient" type="Node" parent="."]
+script = ExtResource("2_auth")
+
+[node name="NetworkClient" type="Node" parent="."]
+script = ExtResource("3_network")
+
+[node name="LoginScreen" parent="." instance=ExtResource("4_login")]
