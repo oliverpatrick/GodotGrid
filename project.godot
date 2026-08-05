@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="GodotGrid"
-run/main_scene="uid://yaiwisaay14y"
+run/main_scene="res://terrain_generator.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
