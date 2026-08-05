@@ -16,6 +16,7 @@ signal local_system_message(text: String)
 @onready var follow_camera: Camera3D = $FollowCamera
 @onready var object_registry: Node3D = $ObjectRegistry
 @onready var interaction_controller: Node = $InteractionController
+@onready var selection_feedback: Node3D = $SelectionFeedback
 @onready var hud: CanvasLayer = $HUD
 var resolved_content_root := ""
 
@@ -39,6 +40,7 @@ func _ready() -> void:
 	if content_bundle == null:
 		login_screen.show_error("Game content failed validation")
 		return
+	selection_feedback.configure(content_bundle)
 	login_screen.submitted.connect(_on_login_submitted)
 	auth_client.login_succeeded.connect(_on_login_succeeded)
 	auth_client.login_failed.connect(login_screen.show_error)
@@ -52,6 +54,8 @@ func _ready() -> void:
 	click_to_move.system_message.connect(local_system_message.emit)
 	click_to_move.system_message.connect(hud.add_system_message)
 	click_to_move.entity_clicked.connect(interaction_controller.interact)
+	click_to_move.destination_requested.connect(func(tile: Vector3i, _mode: int, _sequence: int): selection_feedback.select_tile(tile))
+	click_to_move.entity_clicked.connect(_on_entity_selected)
 	var automatic_email := OS.get_environment("MVP_EMAIL")
 	var automatic_password := OS.get_environment("MVP_PASSWORD")
 	if not automatic_email.is_empty() and not automatic_password.is_empty():
@@ -87,3 +91,8 @@ func _on_world_message(id: int, message) -> void:
 		stream.load_region("%d:%d:%d" % [message.x, message.z, message.plane])
 	elif id == Protocol.REGION_UNLOAD:
 		stream.unload_region("%d:%d:%d" % [message.x, message.z, message.plane])
+
+func _on_entity_selected(entity: int) -> void:
+	var object = object_registry.object_for(entity)
+	if object != null:
+		selection_feedback.select_object(object)

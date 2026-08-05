@@ -9,6 +9,9 @@ var bundle
 func configure(content_bundle) -> void:
 	bundle = content_bundle
 
+func object_for(entity: int):
+	return objects.get(entity)
+
 func handle_message(id: int, message) -> void:
 	if message == null:
 		return

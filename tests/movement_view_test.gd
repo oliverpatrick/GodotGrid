@@ -2,6 +2,7 @@ extends RefCounted
 
 const RemotePlayer = preload("res://world/remote_player.gd")
 const ClickToMove = preload("res://world/click_to_move.gd")
+const ObjectRegistry = preload("res://world/object_registry.gd")
 
 static func run() -> bool:
 	var player: Node3D = RemotePlayer.new()
@@ -23,4 +24,12 @@ static func run() -> bool:
 	controller.system_message.connect(func(text: String): messages.append(text))
 	controller.reject_unreachable()
 	controller.free()
-	return messages == ["I can't reach that"]
+	if messages != ["I can't reach that"]:
+		return false
+	var registry := ObjectRegistry.new()
+	var sentinel := Node3D.new()
+	registry.objects[42] = sentinel
+	var lookup_ok: bool = registry.object_for(42) == sentinel and registry.object_for(99) == null
+	sentinel.free()
+	registry.free()
+	return lookup_ok

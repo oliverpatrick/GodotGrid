@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://yaiwisaay14y"]
+[gd_scene load_steps=15 format=3 uid="uid://yaiwisaay14y"]
 
 [ext_resource type="Script" path="res://game_app.gd" id="1_wc7r7"]
 [ext_resource type="Script" path="res://network/auth_client.gd" id="2_auth"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://world/object_registry.gd" id="8_objects"]
 [ext_resource type="Script" path="res://gameplay/interaction_controller.gd" id="9_interaction"]
 [ext_resource type="PackedScene" path="res://ui/hud.tscn" id="10_hud"]
+[ext_resource type="Script" path="res://gameplay/selection_feedback.gd" id="11_selection"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wc7r7"]
 sky_top_color = Color(0.357247, 0.524792, 0.750752, 1)
@@ -56,5 +57,8 @@ script = ExtResource("8_objects")
 
 [node name="InteractionController" type="Node" parent="."]
 script = ExtResource("9_interaction")
+
+[node name="SelectionFeedback" type="Node3D" parent="."]
+script = ExtResource("11_selection")
 
 [node name="HUD" parent="." instance=ExtResource("10_hud")]
