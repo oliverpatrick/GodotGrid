@@ -5,6 +5,7 @@ const Protocol = preload("res://network/protocol.gd")
 
 signal destination_requested(tile: Vector3i, mode: int, sequence: int)
 signal system_message(text: String)
+signal entity_clicked(entity: int)
 
 var camera: Camera3D
 var stream
@@ -48,6 +49,10 @@ func request_screen_destination(screen_position: Vector2, mode: int = 0):
 	var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
 	if hit.is_empty():
 		return reject_unreachable()
+	if hit.collider != null and hit.collider.has_meta("entity_id"):
+		var entity: int = hit.collider.get_meta("entity_id")
+		entity_clicked.emit(entity)
+		return entity
 	var tile = world_to_visible_tile(hit.position, stream.loaded)
 	if tile == null:
 		return reject_unreachable()

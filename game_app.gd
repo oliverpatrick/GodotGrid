@@ -14,6 +14,9 @@ signal local_system_message(text: String)
 @onready var player_registry: Node3D = $PlayerRegistry
 @onready var click_to_move: Node = $ClickToMove
 @onready var follow_camera: Camera3D = $FollowCamera
+@onready var object_registry: Node3D = $ObjectRegistry
+@onready var interaction_controller: Node = $InteractionController
+@onready var hud: CanvasLayer = $HUD
 var resolved_content_root := ""
 
 func _ready() -> void:
@@ -42,9 +45,13 @@ func _ready() -> void:
 	network_client.connected.connect(_on_world_connected)
 	network_client.disconnected.connect(login_screen.show_error)
 	network_client.message_received.connect(player_registry.handle_message)
+	network_client.message_received.connect(object_registry.handle_message)
+	network_client.message_received.connect(hud.handle_message)
 	network_client.message_received.connect(_on_world_message)
 	player_registry.local_player_ready.connect(follow_camera.configure)
 	click_to_move.system_message.connect(local_system_message.emit)
+	click_to_move.system_message.connect(hud.add_system_message)
+	click_to_move.entity_clicked.connect(interaction_controller.interact)
 
 func _on_login_submitted(email: String, password: String) -> void:
 	auth_client.login(auth_url, email, password)
@@ -61,8 +68,11 @@ func _on_world_connected(_entity: int) -> void:
 		if configured_tick.is_valid_int():
 			tick_seconds = configured_tick.to_float() / 1000.0
 		player_registry.configure(content_bundle, network_client.entity_id, tick_seconds)
+		object_registry.configure(content_bundle)
+		interaction_controller.configure(network_client)
 		click_to_move.configure(follow_camera, stream, network_client)
 		login_screen.hide()
+		hud.show()
 	else:
 		login_screen.show_error("Unable to load world")
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://yaiwisaay14y"]
+[gd_scene load_steps=14 format=3 uid="uid://yaiwisaay14y"]
 
 [ext_resource type="Script" path="res://game_app.gd" id="1_wc7r7"]
 [ext_resource type="Script" path="res://network/auth_client.gd" id="2_auth"]
@@ -7,6 +7,9 @@
 [ext_resource type="Script" path="res://world/player_registry.gd" id="5_registry"]
 [ext_resource type="Script" path="res://world/click_to_move.gd" id="6_click"]
 [ext_resource type="Script" path="res://camera_controller.gd" id="7_camera"]
+[ext_resource type="Script" path="res://world/object_registry.gd" id="8_objects"]
+[ext_resource type="Script" path="res://gameplay/interaction_controller.gd" id="9_interaction"]
+[ext_resource type="PackedScene" path="res://ui/hud.tscn" id="10_hud"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wc7r7"]
 sky_top_color = Color(0.357247, 0.524792, 0.750752, 1)
@@ -47,3 +50,11 @@ script = ExtResource("6_click")
 
 [node name="FollowCamera" type="Camera3D" parent="."]
 script = ExtResource("7_camera")
+
+[node name="ObjectRegistry" type="Node3D" parent="."]
+script = ExtResource("8_objects")
+
+[node name="InteractionController" type="Node" parent="."]
+script = ExtResource("9_interaction")
+
+[node name="HUD" parent="." instance=ExtResource("10_hud")]
