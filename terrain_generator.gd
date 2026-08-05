@@ -18,7 +18,7 @@ func _ready() -> void:
 	if not load_world(root):
 		push_error("Unable to load game content: %s" % ContentLoader.last_error)
 
-func load_world(root: String) -> bool:
+func load_world(root: String, load_all_regions: bool = true) -> bool:
 	content_bundle = ContentLoader.load_bundle(root)
 	if content_bundle == null:
 		return false
@@ -28,6 +28,8 @@ func load_world(root: String) -> bool:
 	stream.name = "WorldStream"
 	add_child(stream)
 	stream.configure(content_bundle)
+	if not load_all_regions:
+		return true
 	for z in range(4):
 		for x in range(4):
 			if not stream.load_region("%d:%d:0" % [x, z]):

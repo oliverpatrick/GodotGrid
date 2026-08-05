@@ -10,6 +10,7 @@ func _initialize() -> void:
 		preload("res://tests/protocol_test.gd"),
 		preload("res://tests/network_client_test.gd"),
 		preload("res://tests/auth_client_test.gd"),
+		preload("res://tests/movement_view_test.gd"),
 	]
 	for suite in suites:
 		if not suite.run():
