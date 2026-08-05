@@ -31,7 +31,7 @@ static func build(region: Dictionary) -> MeshInstance3D:
 			var southeast := southwest + 1
 			var northwest := (z + 1) * 65 + x
 			var northeast := northwest + 1
-			indices.append_array([southwest, northwest, northeast, southwest, northeast, southeast])
+			indices.append_array([southwest, southeast, northeast, southwest, northeast, northwest])
 	var arrays := []
 	arrays.resize(Mesh.ARRAY_MAX)
 	arrays[Mesh.ARRAY_VERTEX] = vertices
