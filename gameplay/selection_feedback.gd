@@ -37,8 +37,6 @@ func select_object(object: Node3D) -> void:
 	_pulse_time = 0.0
 
 func _process(delta: float) -> void:
-	if marker == null:
-		return
 	if not is_instance_valid(marker):
 		marker = null
 		selection_kind = ""

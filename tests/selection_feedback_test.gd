@@ -21,6 +21,14 @@ static func run() -> bool:
 		feedback.free()
 		return false
 	feedback.select_tile(Vector3i(82, 0, 83))
-	var ok := feedback.selection_kind == "tile" and feedback.marker.get_parent() == feedback
+	if feedback.selection_kind != "tile" or feedback.marker.get_parent() != feedback:
+		feedback.free()
+		return false
+	var removed_tree := Node3D.new()
+	feedback.add_child(removed_tree)
+	feedback.select_object(removed_tree)
+	removed_tree.free()
+	feedback._process(0.1)
+	var ok := feedback.selection_kind.is_empty() and feedback.marker == null
 	feedback.free()
 	return ok
