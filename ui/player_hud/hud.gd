@@ -5,7 +5,7 @@ signal run_toggled(enabled: bool)
 
 const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
 const HUDStateScript = preload("uid://donlsyshgyxjl") # ui/player_hud/hud_state.gd
-const UIScale = preload("uid://dns5qsqqg8yeg") # ui/ui_scale.gd
+const UIScaleScript = preload("uid://dns5qsqqg8yeg") # ui/ui_scale.gd
 var state = HUDStateScript.new()
 @onready var inventory: PanelContainer = $InventoryPanel
 @onready var chatbox: PanelContainer = $Chatbox
@@ -15,7 +15,6 @@ var state = HUDStateScript.new()
 
 func _ready() -> void:
 	run_button.toggled.connect(_on_run_button_toggled)
-	inventory.drop_requested.connect(func(slot: int): get_parent().get_node("InteractionController").drop_slot(slot))
 	chatbox.nearby_submitted.connect(func(text: String): get_parent().get_node("InteractionController").send_nearby_chat(text))
 	get_viewport().size_changed.connect(_apply_layout)
 	_apply_layout()
@@ -31,7 +30,7 @@ func _apply_layout() -> void:
 	var safe := DisplayServer.get_display_safe_area()
 	if safe.size.x <= 0 or safe.size.y <= 0:
 		safe = Rect2i(Vector2i.ZERO, window_size)
-	var layout := UIScale.safe_layout(window_size, safe, UIScale.parse_override(OS.get_environment("UI_SCALE")))
+	var layout := UIScaleScript.safe_layout(window_size, safe, UIScaleScript.parse_override(OS.get_environment("UI_SCALE")))
 	var conversion := Vector2(logical_size.x / window_size.x, logical_size.y / window_size.y)
 	_apply_rect($SkillPanel, _to_logical_rect(layout.skill_rect, conversion))
 	_apply_rect(run_button, _to_logical_rect(layout.run_rect, conversion))

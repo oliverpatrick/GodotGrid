@@ -1,7 +1,7 @@
 class_name SelectionFeedback
 extends Node3D
 
-const TerrainHeight = preload("uid://ctl1kxhgld3tn") # world/terrain_height.gd
+const TerrainHeightScript = preload("uid://ctl1kxhgld3tn") # world/terrain_height.gd
 
 var bundle
 var marker: Node3D
@@ -23,7 +23,7 @@ func select_tile(tile: Vector3i) -> void:
 	add_child(marker)
 	var x := tile.x + 0.5
 	var z := tile.z + 0.5
-	marker.position = Vector3(x, TerrainHeight.sample(bundle, x, z, tile.y) + 0.035, z)
+	marker.position = Vector3(x, TerrainHeightScript.sample(bundle, x, z, tile.y) + 0.035, z)
 	selection_kind = "tile"
 
 func select_object(object: Node3D) -> void:

@@ -1,7 +1,6 @@
 class_name InventoryPanel
 extends PanelContainer
 
-signal drop_requested(slot: int)
 signal context_requested(slot: int, screen_position: Vector2)
 signal slot_clicked(slot: int)
 var buttons: Array[Button] = []

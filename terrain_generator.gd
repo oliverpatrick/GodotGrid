@@ -1,8 +1,8 @@
 class_name TerrainGenerator
 extends Node3D
 
-const ContentLoader = preload("uid://1wwkkod0bsqn") # content/content_loader.gd
-const WorldStream = preload("uid://bmypmfoti27gk") # world/world_stream.gd
+const ContentLoaderScript = preload("uid://1wwkkod0bsqn") # content/content_loader.gd
+const WorldStreamScript = preload("uid://bmypmfoti27gk") # world/world_stream.gd
 
 @export_dir var content_root := ""
 var content_bundle
@@ -16,15 +16,15 @@ func _ready() -> void:
 		push_error("GAME_CONTENT_ROOT or content_root is required")
 		return
 	if not load_world(root):
-		push_error("Unable to load game content: %s" % ContentLoader.last_error)
+		push_error("Unable to load game content: %s" % ContentLoaderScript.last_error)
 
 func load_world(root: String, load_all_regions: bool = true) -> bool:
-	content_bundle = ContentLoader.load_bundle(root)
+	content_bundle = ContentLoaderScript.load_bundle(root)
 	if content_bundle == null:
 		return false
 	if stream != null:
 		stream.free()
-	stream = WorldStream.new()
+	stream = WorldStreamScript.new()
 	stream.name = "WorldStream"
 	add_child(stream)
 	stream.configure(content_bundle)

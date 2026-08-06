@@ -34,7 +34,7 @@ static func world_to_visible_tile(point: Vector3, loaded_regions: Dictionary):
 	var z := int(floor(point.z))
 	if x < 0 or z < 0 or x >= 256 or z >= 256:
 		return null
-	var key := "%d:%d:0" % [x / 64, z / 64]
+	var key := "%d:%d:0" % [x >> 6, z >> 6]
 	if not loaded_regions.has(key):
 		return null
 	return Vector3i(x, 0, z)

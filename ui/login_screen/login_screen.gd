@@ -1,7 +1,7 @@
 class_name LoginScreen
 extends CanvasLayer
 
-const UIScale = preload("uid://dns5qsqqg8yeg") # ui/ui_scale.gd
+const UIScaleScript = preload("uid://dns5qsqqg8yeg") # ui/ui_scale.gd
 
 signal submitted(email: String, password: String)
 
@@ -16,7 +16,7 @@ func _ready() -> void:
 	backdrop.color = Color(0.025, 0.035, 0.035, 0.96)
 	add_child(backdrop)
 	var panel := PanelContainer.new()
-	var user_scale := UIScale.parse_override(OS.get_environment("UI_SCALE"))
+	var user_scale := UIScaleScript.parse_override(OS.get_environment("UI_SCALE"))
 	panel.custom_minimum_size = Vector2(420, 300) * user_scale
 	panel.set_anchors_preset(Control.PRESET_CENTER)
 	panel.position = panel.custom_minimum_size * -0.5

@@ -1,7 +1,7 @@
 class_name RemotePlayer
 extends Node3D
 
-const TerrainHeight = preload("uid://ctl1kxhgld3tn") # world/terrain_height.gd
+const TerrainHeightScript = preload("uid://ctl1kxhgld3tn") # world/terrain_height.gd
 const PlayerAnimationControllerScript = preload("uid://ch55e8gtqv5nx") # world/player_animation_controller.gd
 
 var player_index := -1
@@ -28,9 +28,9 @@ func _ready() -> void:
 		body.material_override = material
 		add_child(body)
 
-func configure(index: int, name: String, bundle) -> void:
+func configure(index: int, player_name: String, bundle) -> void:
 	player_index = index
-	display_name = name
+	display_name = player_name
 	terrain_bundle = bundle
 	_ensure_animation_controller()
 
@@ -87,4 +87,4 @@ func _ensure_animation_controller() -> void:
 func _tile_position(x: int, z: int, at_plane: int) -> Vector3:
 	var centre_x := x + 0.5
 	var centre_z := z + 0.5
-	return Vector3(centre_x, TerrainHeight.sample(terrain_bundle, centre_x, centre_z, at_plane), centre_z)
+	return Vector3(centre_x, TerrainHeightScript.sample(terrain_bundle, centre_x, centre_z, at_plane), centre_z)

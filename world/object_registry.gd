@@ -2,7 +2,7 @@ class_name ObjectRegistry
 extends Node3D
 
 const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
-const TerrainHeight = preload("uid://ctl1kxhgld3tn") # world/terrain_height.gd
+const TerrainHeightScript = preload("uid://ctl1kxhgld3tn") # world/terrain_height.gd
 const TreeScene = preload("uid://b5sbv81foeoy2") # assets/world/mutated_tree.tscn
 var objects: Dictionary = {}
 var bundle
@@ -77,7 +77,7 @@ func _spawn_object(message: Dictionary) -> void:
 func _place_object(body: StaticBody3D, message: Dictionary) -> void:
 	var centre_x: float = message.x + 0.5
 	var centre_z: float = message.z + 0.5
-	body.position = Vector3(centre_x, TerrainHeight.sample(bundle, centre_x, centre_z, message.plane), centre_z)
+	body.position = Vector3(centre_x, TerrainHeightScript.sample(bundle, centre_x, centre_z, message.plane), centre_z)
 	add_child(body)
 	objects[message.entity] = body
 

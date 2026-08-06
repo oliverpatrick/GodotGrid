@@ -1,9 +1,8 @@
 extends "res://terrain_generator.gd"
 
-const ContentLoaderScript = preload("uid://1wwkkod0bsqn") # content/content_loader.gd
 const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
-const ContextActions = preload("uid://c2b253hr1kstw") # gameplay/context_actions.gd
-const UseTargeting = preload("uid://tol3ubn1sah4") # gameplay/use_targeting.gd
+const ContextActionsScript = preload("uid://c2b253hr1kstw") # gameplay/context_actions.gd
+const UseTargetingScript = preload("uid://tol3ubn1sah4") # gameplay/use_targeting.gd
 const ContextMenuScene = preload("uid://caafyydy1os1") # ui/context_menu/context_menu.tscn
 signal local_system_message(text: String)
 
@@ -23,7 +22,7 @@ signal local_system_message(text: String)
 @onready var hud: CanvasLayer = $HUD
 var context_menu: PopupMenu
 var resolved_content_root := ""
-var use_targeting = UseTargeting.new()
+var use_targeting = UseTargetingScript.new()
 var _context_kind := ""
 var _context_entity := 0
 var _context_slot := -1
@@ -135,13 +134,13 @@ func _on_world_context_requested(entity: int, screen_position: Vector2) -> void:
 	_context_slot = -1
 	var kind: String = object_registry.kind_for(entity)
 	if not kind.is_empty():
-		context_menu.open(ContextActions.world_actions(kind), screen_position)
+		context_menu.open(ContextActionsScript.world_actions(kind), screen_position)
 
 func _on_inventory_context_requested(slot: int, screen_position: Vector2) -> void:
 	_context_kind = "inventory"
 	_context_slot = slot
 	_context_entity = 0
-	context_menu.open(ContextActions.inventory_actions(hud.inventory.item_droppable(slot)), screen_position)
+	context_menu.open(ContextActionsScript.inventory_actions(hud.inventory.item_droppable(slot)), screen_position)
 
 func _on_context_action(action_id: String) -> void:
 	match action_id:
