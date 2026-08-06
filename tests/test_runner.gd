@@ -24,6 +24,7 @@ func run_tests() -> void:
 		preload("res://tests/tree_presentation_test.gd"),
 		preload("res://tests/ui_scale_test.gd"),
 		preload("res://tests/run_toggle_test.gd"),
+		preload("res://tests/context_menu_test.gd"),
 		preload("res://tests/hud_state_test.gd"),
 	]
 	for suite in suites:
