@@ -16,22 +16,22 @@ func _init(player: AnimationPlayer) -> void:
 	var harvest := animation_player.get_animation(HARVEST_ANIMATION)
 	if harvest != null:
 		harvest.loop_mode = Animation.LOOP_LINEAR
-	_refresh()
+	refresh()
 
 func set_action(next_action: int) -> void:
 	action = next_action
-	_refresh()
+	refresh()
 
 func movement_started(tile_distance: int) -> void:
 	moving = true
 	movement_animation = RUN_ANIMATION if tile_distance >= 2 else WALK_ANIMATION
-	_refresh()
+	refresh()
 
 func movement_finished() -> void:
 	moving = false
-	_refresh()
+	refresh()
 
-func _refresh() -> void:
+func refresh() -> void:
 	var wanted := movement_animation if moving else (HARVEST_ANIMATION if action == 1 else IDLE_ANIMATION)
 	if not animation_player.has_animation(wanted):
 		push_warning("Missing player animation: %s" % wanted)

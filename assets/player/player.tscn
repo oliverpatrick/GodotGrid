@@ -17929,4 +17929,3 @@ anim_player = NodePath("../AnimationPlayer")
 libraries = {
 &"": SubResource("AnimationLibrary_pqrvo")
 }
-autoplay = "A_TPose"

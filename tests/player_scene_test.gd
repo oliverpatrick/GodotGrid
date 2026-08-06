@@ -14,39 +14,42 @@ static func run() -> bool:
 			return false
 	player.configure(1, "Test", bundle)
 	player.snap_to_tile(10, 10, 0)
+	var test_root := Node3D.new()
+	Engine.get_main_loop().root.add_child(test_root)
+	test_root.add_child(player)
 	if animations.current_animation != "Idle":
-		printerr("initial animation=%s" % animations.current_animation)
-		player.free()
+		printerr("live initial animation=%s" % animations.current_animation)
+		test_root.free()
 		return false
 	player.confirm_tile(11, 10, 0, 0.6)
 	if animations.current_animation != "Walk":
 		printerr("walk animation=%s" % animations.current_animation)
-		player.free()
+		test_root.free()
 		return false
 	player.advance_interpolation(0.6)
 	player.snap_to_tile(10, 10, 0)
 	player.confirm_tile(12, 10, 0, 0.6)
 	if animations.current_animation != "Jog_Fwd":
 		printerr("jog animation=%s" % animations.current_animation)
-		player.free()
+		test_root.free()
 		return false
 	player.advance_interpolation(0.6)
 	player.set_action(1)
 	if animations.current_animation != "Sword_Attack":
 		printerr("harvest animation=%s" % animations.current_animation)
-		player.free()
+		test_root.free()
 		return false
 	player.confirm_tile(11, 10, 0, 0.6)
 	if animations.current_animation != "Walk":
 		printerr("harvest movement animation=%s" % animations.current_animation)
-		player.free()
+		test_root.free()
 		return false
 	player.advance_interpolation(0.6)
 	if animations.current_animation != "Sword_Attack":
 		printerr("resumed animation=%s" % animations.current_animation)
-		player.free()
+		test_root.free()
 		return false
 	player.set_action(0)
 	var ok := animations.current_animation == "Idle"
-	player.free()
+	test_root.free()
 	return ok
