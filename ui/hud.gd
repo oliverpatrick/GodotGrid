@@ -1,6 +1,8 @@
 class_name GameHUD
 extends CanvasLayer
 
+signal run_toggled(enabled: bool)
+
 const Protocol = preload("res://network/protocol.gd")
 const HUDStateScript = preload("res://ui/hud_state.gd")
 const UIScale = preload("res://ui/ui_scale.gd")
@@ -8,8 +10,10 @@ var state = HUDStateScript.new()
 @onready var inventory: PanelContainer = $InventoryPanel
 @onready var chatbox: PanelContainer = $Chatbox
 @onready var skill_label: Label = $SkillPanel/SkillLabel
+@onready var run_button: Button = $RunButton
 
 func _ready() -> void:
+	run_button.toggled.connect(_on_run_button_toggled)
 	inventory.drop_requested.connect(func(slot: int): get_parent().get_node("InteractionController").drop_slot(slot))
 	chatbox.nearby_submitted.connect(func(text: String): get_parent().get_node("InteractionController").send_nearby_chat(text))
 	get_viewport().size_changed.connect(_apply_layout)
@@ -26,6 +30,7 @@ func _apply_layout() -> void:
 	var layout := UIScale.safe_layout(window_size, safe, UIScale.parse_override(OS.get_environment("UI_SCALE")))
 	var conversion := Vector2(logical_size.x / window_size.x, logical_size.y / window_size.y)
 	_apply_rect($SkillPanel, _to_logical_rect(layout.skill_rect, conversion))
+	_apply_rect(run_button, _to_logical_rect(layout.run_rect, conversion))
 	_apply_rect(inventory, _to_logical_rect(layout.inventory_rect, conversion))
 	_apply_rect(chatbox, _to_logical_rect(layout.chat_rect, conversion))
 
@@ -36,6 +41,17 @@ func _apply_rect(control: Control, rect: Rect2) -> void:
 	control.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	control.position = rect.position
 	control.size = rect.size
+
+func set_run_enabled(enabled: bool) -> void:
+	if run_button.button_pressed == enabled:
+		return
+	run_button.button_pressed = enabled
+
+func is_run_enabled() -> bool:
+	return run_button.button_pressed
+
+func _on_run_button_toggled(enabled: bool) -> void:
+	run_toggled.emit(enabled)
 
 func handle_message(id: int, message) -> void:
 	if message == null:
