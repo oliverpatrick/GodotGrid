@@ -16,9 +16,14 @@ static func run() -> bool:
 	interaction.configure(network)
 	var first_move: PackedByteArray = movement.build_move_request(Vector3i(80, 0, 80), 0)
 	var second_move: PackedByteArray = movement.build_move_request(Vector3i(81, 0, 80), 0)
-	var object_click: PackedByteArray = interaction.build_interaction_request(0x8000002a, 0)
-	var drop: PackedByteArray = interaction.build_drop_request(3)
-	var ok := [_sequence(first_move), _sequence(second_move), _sequence(object_click), _sequence(drop)] == [1, 2, 3, 4]
+	var inspect_world: PackedByteArray = interaction.build_inspect_world_request(0x8000002a)
+	var inspect_inventory: PackedByteArray = interaction.build_inspect_inventory_request(3)
+	var use_inventory: PackedByteArray = interaction.build_use_inventory_request(3, 4)
+	var use_world: PackedByteArray = interaction.build_use_world_request(3, 0x8000002a)
+	var ok := [_sequence(first_move), _sequence(second_move), _sequence(use_world)] == [1, 2, 3]
+	ok = ok and inspect_world.hex_encode() == "001300048000002a"
+	ok = ok and inspect_inventory.hex_encode() == "0014000103"
+	ok = ok and use_inventory.hex_encode() == "001500020304"
 	movement.free()
 	interaction.free()
 	network.free()
