@@ -1,6 +1,6 @@
 extends RefCounted
 
-const HUDScene = preload("res://ui/hud.tscn")
+const HUDScene = preload("uid://01ughi8s4iax") # ui/player_hud/hud.tscn
 const GameApp = preload("res://game_app.gd")
 const ClickToMove = preload("res://world/click_to_move.gd")
 

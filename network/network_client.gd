@@ -1,7 +1,7 @@
 class_name GameNetworkClient
 extends Node
 
-const Protocol = preload("res://network/protocol.gd")
+const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
 
 signal connected(entity: int)
 signal disconnected(reason: String)

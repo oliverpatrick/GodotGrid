@@ -1,7 +1,7 @@
 class_name ContentLoader
 extends RefCounted
 
-const ContentBundle = preload("res://content/content_manifest.gd")
+const ContentBundle = preload("uid://c1d1vjf4433ls") # content/content_manifest.gd
 static var last_error := ""
 
 static func load_bundle(root: String):

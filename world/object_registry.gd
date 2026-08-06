@@ -1,9 +1,9 @@
 class_name ObjectRegistry
 extends Node3D
 
-const Protocol = preload("res://network/protocol.gd")
-const TerrainHeight = preload("res://world/terrain_height.gd")
-const TreeScene = preload("res://assets/world/mutated_tree.tscn")
+const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
+const TerrainHeight = preload("uid://ctl1kxhgld3tn") # world/terrain_height.gd
+const TreeScene = preload("uid://b5sbv81foeoy2") # assets/world/mutated_tree.tscn
 var objects: Dictionary = {}
 var bundle
 

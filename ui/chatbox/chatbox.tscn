@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=2 format=3 uid="uid://ytwtm0jw084w"]
 
-[ext_resource type="Script" path="res://ui/chatbox.gd" id="1"]
+[ext_resource type="Script" uid="uid://rm0x6pb6lqve" path="res://ui/chatbox/chatbox.gd" id="1"]
 
 [node name="Chatbox" type="PanelContainer"]
 offset_left = 18.0

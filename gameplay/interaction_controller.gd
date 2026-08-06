@@ -1,7 +1,7 @@
 class_name InteractionController
 extends Node
 
-const Protocol = preload("res://network/protocol.gd")
+const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
 var network
 
 func configure(network_client) -> void:

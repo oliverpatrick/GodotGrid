@@ -1,8 +1,8 @@
 class_name TerrainGenerator
 extends Node3D
 
-const ContentLoader = preload("res://content/content_loader.gd")
-const WorldStream = preload("res://world/world_stream.gd")
+const ContentLoader = preload("uid://1wwkkod0bsqn") # content/content_loader.gd
+const WorldStream = preload("uid://bmypmfoti27gk") # world/world_stream.gd
 
 @export_dir var content_root := ""
 var content_bundle

@@ -3,9 +3,9 @@ extends CanvasLayer
 
 signal run_toggled(enabled: bool)
 
-const Protocol = preload("res://network/protocol.gd")
-const HUDStateScript = preload("res://ui/hud_state.gd")
-const UIScale = preload("res://ui/ui_scale.gd")
+const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
+const HUDStateScript = preload("uid://donlsyshgyxjl") # ui/player_hud/hud_state.gd
+const UIScale = preload("uid://dns5qsqqg8yeg") # ui/ui_scale.gd
 var state = HUDStateScript.new()
 @onready var inventory: PanelContainer = $InventoryPanel
 @onready var chatbox: PanelContainer = $Chatbox

@@ -1,7 +1,7 @@
 extends RefCounted
 
-const ContextAction = preload("res://ui/context_action.gd")
-const ContextMenuScene = preload("res://ui/context_menu.tscn")
+const ContextAction = preload("uid://dttp4mcn4r8xm") # ui/context_menu/context_action.gd
+const ContextMenuScene = preload("uid://caafyydy1os1") # ui/context_menu/context_menu.tscn
 
 static func run() -> bool:
 	var child = ContextAction.create("Child", "child.action")

@@ -1,8 +1,8 @@
 class_name PlayerRegistry
 extends Node3D
 
-const Protocol = preload("res://network/protocol.gd")
-const PLAYER_SCENE = preload("res://assets/player/player.tscn")
+const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
+const PLAYER_SCENE = preload("uid://tvjj76iceovt") # assets/player/player.tscn
 
 signal local_player_ready(player: Node3D)
 

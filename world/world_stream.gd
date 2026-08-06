@@ -1,7 +1,7 @@
 class_name WorldStream
 extends Node3D
 
-const RegionMeshBuilder = preload("res://world/region_mesh_builder.gd")
+const RegionMeshBuilder = preload("uid://cmajy2ls4qmaf") # world/region_mesh_builder.gd
 var bundle
 var loaded: Dictionary = {}
 

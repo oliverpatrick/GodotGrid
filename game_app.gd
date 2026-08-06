@@ -1,10 +1,10 @@
 extends "res://terrain_generator.gd"
 
-const ContentLoaderScript = preload("res://content/content_loader.gd")
-const Protocol = preload("res://network/protocol.gd")
-const ContextActions = preload("res://gameplay/context_actions.gd")
-const UseTargeting = preload("res://gameplay/use_targeting.gd")
-const ContextMenuScene = preload("res://ui/context_menu.tscn")
+const ContentLoaderScript = preload("uid://1wwkkod0bsqn") # content/content_loader.gd
+const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
+const ContextActions = preload("uid://c2b253hr1kstw") # gameplay/context_actions.gd
+const UseTargeting = preload("uid://tol3ubn1sah4") # gameplay/use_targeting.gd
+const ContextMenuScene = preload("uid://caafyydy1os1") # ui/context_menu/context_menu.tscn
 signal local_system_message(text: String)
 
 @export var auth_url := "http://127.0.0.1:8080"

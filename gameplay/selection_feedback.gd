@@ -1,7 +1,7 @@
 class_name SelectionFeedback
 extends Node3D
 
-const TerrainHeight = preload("res://world/terrain_height.gd")
+const TerrainHeight = preload("uid://ctl1kxhgld3tn") # world/terrain_height.gd
 
 var bundle
 var marker: Node3D

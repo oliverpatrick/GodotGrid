@@ -1,8 +1,8 @@
 class_name RemotePlayer
 extends Node3D
 
-const TerrainHeight = preload("res://world/terrain_height.gd")
-const PlayerAnimationControllerScript = preload("res://world/player_animation_controller.gd")
+const TerrainHeight = preload("uid://ctl1kxhgld3tn") # world/terrain_height.gd
+const PlayerAnimationControllerScript = preload("uid://ch55e8gtqv5nx") # world/player_animation_controller.gd
 
 var player_index := -1
 var display_name := ""

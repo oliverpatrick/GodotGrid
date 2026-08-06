@@ -1,7 +1,7 @@
 class_name LoginScreen
 extends CanvasLayer
 
-const UIScale = preload("res://ui/ui_scale.gd")
+const UIScale = preload("uid://dns5qsqqg8yeg") # ui/ui_scale.gd
 
 signal submitted(email: String, password: String)
 

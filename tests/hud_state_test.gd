@@ -1,6 +1,6 @@
 extends RefCounted
 
-const HUDState = preload("res://ui/hud_state.gd")
+const HUDState = preload("uid://donlsyshgyxjl") # ui/player_hud/hud_state.gd
 const InteractionController = preload("res://gameplay/interaction_controller.gd")
 const NetworkClient = preload("res://network/network_client.gd")
 

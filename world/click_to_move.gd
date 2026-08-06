@@ -1,7 +1,7 @@
 class_name ClickToMove
 extends Node
 
-const Protocol = preload("res://network/protocol.gd")
+const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
 
 signal destination_requested(tile: Vector3i, mode: int, sequence: int)
 signal system_message(text: String)
