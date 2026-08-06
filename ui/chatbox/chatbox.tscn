@@ -3,9 +3,6 @@
 [ext_resource type="Script" uid="uid://rm0x6pb6lqve" path="res://ui/chatbox/chatbox.gd" id="1"]
 
 [node name="Chatbox" type="PanelContainer"]
-offset_left = 18.0
-offset_top = -220.0
-offset_right = 486.0
-offset_bottom = -18.0
-grow_vertical = 0
+offset_right = 468.0
+offset_bottom = 202.0
 script = ExtResource("1")

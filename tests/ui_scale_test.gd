@@ -1,8 +1,28 @@
 extends RefCounted
 
 const UIScale = preload("res://ui/ui_scale.gd")
+const HUDScene = preload("uid://01ughi8s4iax") # ui/player_hud/hud.tscn
+const ChatboxScene = preload("uid://ytwtm0jw084w") # ui/chatbox/chatbox.tscn
+const InventoryScene = preload("uid://csoygooj0ox56") # ui/inventory/inventory_panel.tscn
 
 static func run() -> bool:
+	var chatbox: Control = ChatboxScene.instantiate()
+	var inventory: Control = InventoryScene.instantiate()
+	var hud = HUDScene.instantiate()
+	var hud_chatbox: Control = hud.get_node("Chatbox")
+	var hud_inventory: Control = hud.get_node("InventoryPanel")
+	var scenes_use_positive_top_left_layout := (
+		chatbox.position.x >= 0.0 and chatbox.position.y >= 0.0
+		and inventory.position.x >= 0.0 and inventory.position.y >= 0.0
+		and hud_chatbox.anchor_left == 0.0 and hud_chatbox.anchor_top == 0.0
+		and hud_inventory.anchor_left == 0.0 and hud_inventory.anchor_top == 0.0
+	)
+	chatbox.free()
+	inventory.free()
+	hud.free()
+	if not scenes_use_positive_top_left_layout:
+		printerr("HUD scenes mix negative anchor-relative and top-left runtime coordinates")
+		return false
 	if UIScale.parse_override("") != 1.0 or UIScale.parse_override("invalid") != 1.0:
 		return false
 	if UIScale.parse_override("250") != 2.0 or UIScale.parse_override("40") != 0.8:
