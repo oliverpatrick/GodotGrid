@@ -12,7 +12,8 @@ func _ready() -> void:
 	add_child(grid)
 	for slot in range(30):
 		var button := Button.new()
-		button.custom_minimum_size = Vector2(54, 48)
+		button.custom_minimum_size = Vector2(48, 48)
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.tooltip_text = "Empty"
 		button.gui_input.connect(_slot_input.bind(slot))
 		grid.add_child(button)

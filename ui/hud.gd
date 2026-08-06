@@ -3,6 +3,7 @@ extends CanvasLayer
 
 const Protocol = preload("res://network/protocol.gd")
 const HUDStateScript = preload("res://ui/hud_state.gd")
+const UIScale = preload("res://ui/ui_scale.gd")
 var state = HUDStateScript.new()
 @onready var inventory: PanelContainer = $InventoryPanel
 @onready var chatbox: PanelContainer = $Chatbox
@@ -11,6 +12,30 @@ var state = HUDStateScript.new()
 func _ready() -> void:
 	inventory.drop_requested.connect(func(slot: int): get_parent().get_node("InteractionController").drop_slot(slot))
 	chatbox.nearby_submitted.connect(func(text: String): get_parent().get_node("InteractionController").send_nearby_chat(text))
+	get_viewport().size_changed.connect(_apply_layout)
+	_apply_layout()
+
+func _apply_layout() -> void:
+	var logical_size := get_viewport().get_visible_rect().size
+	var window_size := DisplayServer.window_get_size()
+	if window_size.x <= 0 or window_size.y <= 0:
+		window_size = Vector2i(logical_size)
+	var safe := DisplayServer.get_display_safe_area()
+	if safe.size.x <= 0 or safe.size.y <= 0:
+		safe = Rect2i(Vector2i.ZERO, window_size)
+	var layout := UIScale.safe_layout(window_size, safe, UIScale.parse_override(OS.get_environment("UI_SCALE")))
+	var conversion := Vector2(logical_size.x / window_size.x, logical_size.y / window_size.y)
+	_apply_rect($SkillPanel, _to_logical_rect(layout.skill_rect, conversion))
+	_apply_rect(inventory, _to_logical_rect(layout.inventory_rect, conversion))
+	_apply_rect(chatbox, _to_logical_rect(layout.chat_rect, conversion))
+
+func _to_logical_rect(rect: Rect2, conversion: Vector2) -> Rect2:
+	return Rect2(rect.position * conversion, rect.size * conversion)
+
+func _apply_rect(control: Control, rect: Rect2) -> void:
+	control.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	control.position = rect.position
+	control.size = rect.size
 
 func handle_message(id: int, message) -> void:
 	if message == null:

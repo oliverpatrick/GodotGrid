@@ -1,6 +1,8 @@
 class_name LoginScreen
 extends CanvasLayer
 
+const UIScale = preload("res://ui/ui_scale.gd")
+
 signal submitted(email: String, password: String)
 
 var email: LineEdit
@@ -14,9 +16,10 @@ func _ready() -> void:
 	backdrop.color = Color(0.025, 0.035, 0.035, 0.96)
 	add_child(backdrop)
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(420, 300)
+	var user_scale := UIScale.parse_override(OS.get_environment("UI_SCALE"))
+	panel.custom_minimum_size = Vector2(420, 300) * user_scale
 	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.position = Vector2(-210, -150)
+	panel.position = panel.custom_minimum_size * -0.5
 	backdrop.add_child(panel)
 	var fields := VBoxContainer.new()
 	fields.add_theme_constant_override("separation", 14)
@@ -40,6 +43,7 @@ func _ready() -> void:
 	fields.add_child(password)
 	submit = Button.new()
 	submit.text = "Enter world"
+	submit.custom_minimum_size.y = 48
 	submit.pressed.connect(_submit)
 	fields.add_child(submit)
 	status = Label.new()
