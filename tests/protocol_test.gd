@@ -18,4 +18,9 @@ static func run() -> bool:
 	var spawn_bytes: PackedByteArray = str(vectors[5].hex).hex_decode()
 	var spawn_frame = Protocol.decode_frame(spawn_bytes)
 	var spawn = Protocol.decode_message(spawn_frame.id, spawn_frame.payload)
-	return spawn != null and spawn.entity == 42 and spawn.x == 80 and spawn.name == "tree"
+	if spawn == null or spawn.entity != 42 or spawn.x != 80 or spawn.name != "tree":
+		return false
+	var action = Protocol.decode_message(Protocol.PLAYER_ACTION, PackedByteArray([0, 0, 0, 42, 1]))
+	if action != {"entity": 42, "action": 1}:
+		return false
+	return Protocol.decode_message(Protocol.PLAYER_ACTION, PackedByteArray([0, 0, 0, 42, 2])) == null

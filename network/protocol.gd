@@ -20,6 +20,7 @@ const SKILL := 0x0121
 const GROUND_ITEM := 0x0122
 const SYSTEM_MESSAGE := 0x0123
 const RESOURCE_STATE := 0x0124
+const PLAYER_ACTION := 0x0125
 
 static func encode_frame(id: int, payload: PackedByteArray) -> PackedByteArray:
 	if payload.size() > MAX_PAYLOAD:
@@ -118,6 +119,10 @@ static func decode_message(id: int, payload: PackedByteArray):
 			if payload.size() != 7:
 				return null
 			return {"entity": _u32(payload, 0), "state": payload[4], "remaining": _u16(payload, 5)}
+		PLAYER_ACTION:
+			if payload.size() != 5 or payload[4] > 1:
+				return null
+			return {"entity": _u32(payload, 0), "action": payload[4]}
 	return null
 
 static func _put_u16(bytes: PackedByteArray, value: int) -> void:
