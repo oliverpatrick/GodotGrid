@@ -33,6 +33,10 @@ func run_tests() -> void:
 			printerr("GODOT_TEST_FAILED: %s" % suite.resource_path)
 			quit(1)
 			return
+	if not preload("res://tests/context_menu_test.gd").placement_is_clamped():
+		printerr("GODOT_TEST_FAILED: context menu popup placement")
+		quit(1)
+		return
 	if not await terrain_accepts_ground_clicks():
 		printerr("GODOT_TEST_FAILED: terrain ground clicks do not hit the loaded region")
 		quit(1)

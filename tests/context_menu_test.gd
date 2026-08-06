@@ -21,3 +21,19 @@ static func run() -> bool:
 	var ok: bool = selected == ["world.inspect"] and not menu.visible
 	menu.free()
 	return ok
+
+static func placement_is_clamped() -> bool:
+	var menu = ContextMenuScene.instantiate()
+	Engine.get_main_loop().root.add_child(menu)
+	var viewport := Rect2i(0, 0, 512, 512)
+	var popup_size := Vector2i(97, 62)
+	var pointer := Vector2(320, 240)
+	var pointer_rect: Rect2i = menu.popup_rect_for(pointer, viewport, popup_size)
+	var bottom_right: Rect2i = menu.popup_rect_for(Vector2(viewport.end) - Vector2.ONE, viewport, popup_size)
+	var top_left: Rect2i = menu.popup_rect_for(Vector2(-10, -10), viewport, popup_size)
+	var oversized: Rect2i = menu.popup_rect_for(Vector2(250, 250), viewport, Vector2i(600, 600))
+	var appears_at_pointer: bool = pointer_rect.position == Vector2i(pointer)
+	var stays_inside_viewport: bool = viewport.encloses(bottom_right) and top_left.position == viewport.position
+	var oversized_anchors_to_origin: bool = oversized.position == viewport.position
+	menu.free()
+	return appears_at_pointer and stays_inside_viewport and oversized_anchors_to_origin

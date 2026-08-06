@@ -7,6 +7,9 @@ var _actions: Dictionary = {}
 var _next_id := 1
 
 func _ready() -> void:
+	# Keep menus in the game viewport so pointer and popup coordinates share the
+	# same space on desktop, mobile, and embedded-window configurations.
+	get_viewport().gui_embed_subwindows = true
 	id_pressed.connect(_on_id_pressed)
 
 func open(actions: Array, screen_position: Vector2) -> void:
@@ -16,12 +19,15 @@ func open(actions: Array, screen_position: Vector2) -> void:
 	_next_id = 1
 	_add_actions(self, actions)
 	reset_size()
-	var viewport_size := Vector2i(get_viewport().get_visible_rect().size)
+	popup(popup_rect_for(screen_position, Rect2i(get_viewport().get_visible_rect()), size))
+
+func popup_rect_for(screen_position: Vector2, viewport_rect: Rect2i, popup_size: Vector2i) -> Rect2i:
 	var wanted := Vector2i(screen_position)
-	wanted.x = clampi(wanted.x, 0, maxi(0, viewport_size.x - size.x))
-	wanted.y = clampi(wanted.y, 0, maxi(0, viewport_size.y - size.y))
-	position = wanted
-	popup()
+	var furthest_x := maxi(viewport_rect.position.x, viewport_rect.end.x - popup_size.x)
+	var furthest_y := maxi(viewport_rect.position.y, viewport_rect.end.y - popup_size.y)
+	wanted.x = clampi(wanted.x, viewport_rect.position.x, furthest_x)
+	wanted.y = clampi(wanted.y, viewport_rect.position.y, furthest_y)
+	return Rect2i(wanted, popup_size)
 
 func select_action(action_id: String) -> void:
 	if action_id == "context.close":
