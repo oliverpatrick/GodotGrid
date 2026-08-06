@@ -36,10 +36,20 @@ anchor_bottom = 1.0
 offset_left = 18.0
 offset_top = 18.0
 offset_right = 190.0
-offset_bottom = 86.0
+offset_bottom = 100.0
 
-[node name="SkillLabel" type="Label" parent="SkillPanel"]
-text = "Harvesting  1\nXP  0"
+[node name="SkillGrid" type="GridContainer" parent="SkillPanel"]
+columns = 2
+
+[node name="Harvesting" type="Label" parent="SkillPanel/SkillGrid"]
+custom_minimum_size = Vector2(154, 68)
+text = "Harvesting\nLevel 1  XP 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Perception" type="Label" parent="SkillPanel/SkillGrid"]
+custom_minimum_size = Vector2(154, 68)
+text = "Perception\nLevel 1  XP 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 

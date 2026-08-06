@@ -9,7 +9,8 @@ const UIScale = preload("res://ui/ui_scale.gd")
 var state = HUDStateScript.new()
 @onready var inventory: PanelContainer = $InventoryPanel
 @onready var chatbox: PanelContainer = $Chatbox
-@onready var skill_label: Label = $SkillPanel/SkillLabel
+@onready var harvesting_label: Label = $SkillPanel/SkillGrid/Harvesting
+@onready var perception_label: Label = $SkillPanel/SkillGrid/Perception
 @onready var run_button: Button = $RunButton
 
 func _ready() -> void:
@@ -65,7 +66,8 @@ func handle_message(id: int, message) -> void:
 			inventory.render_slots(state.slots)
 		Protocol.SKILL:
 			state.apply_skill(message.skill, message.xp)
-			skill_label.text = "Harvesting  %d\nXP  %d" % [state.harvesting_level, state.harvesting_xp]
+			harvesting_label.text = "Harvesting\nLevel %d  XP %d" % [state.harvesting_level, state.harvesting_xp]
+			perception_label.text = "Perception\nLevel %d  XP %d" % [state.perception_level, state.perception_xp]
 		Protocol.CHAT_MESSAGE:
 			add_system_message("[Nearby] Player %d: %s" % [message.sender, message.text])
 		Protocol.SYSTEM_MESSAGE:

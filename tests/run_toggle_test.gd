@@ -10,6 +10,10 @@ static func run() -> bool:
 	Engine.get_main_loop().root.add_child(root)
 	root.add_child(hud)
 	var button: Button = hud.get_node("RunButton")
+	var skill_grid: GridContainer = hud.get_node("SkillPanel/SkillGrid")
+	if skill_grid.columns != 2 or skill_grid.get_child_count() != 2:
+		root.free()
+		return false
 	if button.text != "Run" or hud.is_run_enabled():
 		printerr("Run button has wrong initial state")
 		root.free()

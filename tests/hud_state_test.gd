@@ -12,6 +12,12 @@ static func run() -> bool:
 	state.apply_skill(0, 30)
 	if state.harvesting_xp != 30 or state.harvesting_level != 1:
 		return false
+	state.apply_skill(1, 20)
+	if state.perception_xp != 20 or state.perception_level != 1:
+		return false
+	state.apply_skill(99, 999)
+	if state.perception_xp != 20 or state.harvesting_xp != 30:
+		return false
 	state.apply_resource(0x8000002a, 2)
 	if state.resources[0x8000002a] != 2:
 		return false

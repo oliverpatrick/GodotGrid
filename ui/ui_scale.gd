@@ -21,7 +21,7 @@ static func safe_layout(viewport_size: Vector2i, safe_rect: Rect2i, user_scale: 
 	var margin := 18.0 * scale
 	var content := safe.grow(-margin)
 	var inventory_size := Vector2(292.0, 326.0) * scale
-	var skill_size := Vector2(172.0, 68.0) * scale
+	var skill_size := Vector2(320.0, 82.0) * scale
 	var chat_size := Vector2(468.0, 202.0) * scale
 	var minimum_control_size := Vector2(48.0, 48.0) * maxf(scale, 1.0)
 	var run_size := Vector2(92.0, 48.0) * scale
