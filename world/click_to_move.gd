@@ -10,11 +10,21 @@ signal entity_clicked(entity: int)
 var camera: Camera3D
 var stream
 var network
+var _run_enabled := false
 
 func configure(view_camera: Camera3D, world_stream, network_client) -> void:
 	camera = view_camera
 	stream = world_stream
 	network = network_client
+
+func set_run_enabled(enabled: bool) -> void:
+	_run_enabled = enabled
+
+func is_run_enabled() -> bool:
+	return _run_enabled
+
+func effective_movement_mode(ctrl_pressed: bool) -> int:
+	return 1 if _run_enabled or ctrl_pressed else 0
 
 static func world_to_visible_tile(point: Vector3, loaded_regions: Dictionary):
 	var x := int(floor(point.x))
@@ -33,10 +43,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		screen_position = event.position
 		pressed = event.pressed
-		run_mode = 1 if event.shift_pressed else 0
+		run_mode = effective_movement_mode(event.ctrl_pressed)
 	elif event is InputEventScreenTouch:
 		screen_position = event.position
 		pressed = event.pressed
+		run_mode = effective_movement_mode(false)
 	if pressed:
 		request_screen_destination(screen_position, run_mode)
 
