@@ -17920,6 +17920,7 @@ bones/52/scale = Vector3(1, 1, 1)
 [node name="Mannequin" type="MeshInstance3D" parent="Rig/Skeleton3D"]
 mesh = SubResource("ArrayMesh_onrkg")
 skin = SubResource("Skin_i3pqv")
+skeleton = NodePath("..")
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource("AnimationRootNode_hqtel")
