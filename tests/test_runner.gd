@@ -20,6 +20,7 @@ func run_tests() -> void:
 		preload("res://tests/player_scene_test.gd"),
 		preload("res://tests/player_registry_test.gd"),
 		preload("res://tests/selection_feedback_test.gd"),
+		preload("res://tests/tree_presentation_test.gd"),
 		preload("res://tests/hud_state_test.gd"),
 	]
 	for suite in suites:

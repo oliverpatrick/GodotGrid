@@ -3,6 +3,7 @@ extends Node3D
 
 const Protocol = preload("res://network/protocol.gd")
 const TerrainHeight = preload("res://world/terrain_height.gd")
+const TreeScene = preload("res://assets/world/mutated_tree.tscn")
 var objects: Dictionary = {}
 var bundle
 
@@ -25,45 +26,26 @@ func handle_message(id: int, message) -> void:
 				objects.erase(message.entity)
 		Protocol.RESOURCE_STATE:
 			if objects.has(message.entity):
-				objects[message.entity].visible = message.state != 2
+				_set_resource_state(objects[message.entity], message.state)
 
 func _spawn_object(message: Dictionary) -> void:
 	if objects.has(message.entity):
 		return
-	var body := StaticBody3D.new()
+	var is_tree := str(message.name).begins_with("tree.")
+	var body: StaticBody3D = TreeScene.instantiate() if is_tree else StaticBody3D.new()
 	body.name = "Object_%d" % message.entity
 	body.set_meta("entity_id", message.entity)
-	body.add_to_group("Interactable")
+	if not body.is_in_group("Interactable"):
+		body.add_to_group("Interactable")
+	if is_tree:
+		_add_stump(body)
+		_place_object(body, message)
+		return
 	var mesh_instance := MeshInstance3D.new()
 	var collision := CollisionShape3D.new()
 	var material := StandardMaterial3D.new()
 	material.roughness = 0.86
-	if str(message.name).begins_with("tree."):
-		var trunk := CylinderMesh.new()
-		trunk.top_radius = 0.35
-		trunk.bottom_radius = 0.5
-		trunk.height = 3.2
-		mesh_instance.mesh = trunk
-		mesh_instance.position.y = 1.6
-		var shape := CapsuleShape3D.new()
-		shape.radius = 0.55
-		shape.height = 3.2
-		collision.shape = shape
-		collision.position.y = 1.6
-		material.albedo_color = Color(0.19, 0.34, 0.16)
-		material.emission_enabled = true
-		material.emission = Color(0.08, 0.32, 0.11)
-		material.emission_energy_multiplier = 0.8
-		for offset in [Vector3(-0.65, 3.0, 0.0), Vector3(0.55, 3.25, 0.25), Vector3(0.0, 3.65, -0.35)]:
-			var growth := MeshInstance3D.new()
-			var growth_mesh := SphereMesh.new()
-			growth_mesh.radius = 0.9
-			growth_mesh.height = 1.8
-			growth.mesh = growth_mesh
-			growth.position = offset
-			growth.material_override = material
-			body.add_child(growth)
-	elif "axe" in str(message.name):
+	if "axe" in str(message.name):
 		mesh_instance.mesh = BoxMesh.new()
 		mesh_instance.scale = Vector3(0.18, 0.7, 0.12)
 		mesh_instance.position.y = 0.35
@@ -85,8 +67,43 @@ func _spawn_object(message: Dictionary) -> void:
 	mesh_instance.material_override = material
 	body.add_child(mesh_instance)
 	body.add_child(collision)
+	_place_object(body, message)
+
+func _place_object(body: StaticBody3D, message: Dictionary) -> void:
 	var centre_x: float = message.x + 0.5
 	var centre_z: float = message.z + 0.5
 	body.position = Vector3(centre_x, TerrainHeight.sample(bundle, centre_x, centre_z, message.plane), centre_z)
 	add_child(body)
 	objects[message.entity] = body
+
+func _add_stump(tree: StaticBody3D) -> void:
+	var stump := MeshInstance3D.new()
+	stump.name = "Stump"
+	var stump_mesh := CylinderMesh.new()
+	stump_mesh.top_radius = 0.4
+	stump_mesh.bottom_radius = 0.5
+	stump_mesh.height = 0.5
+	stump.mesh = stump_mesh
+	stump.position.y = 0.25
+	var material := StandardMaterial3D.new()
+	material.albedo_color = Color(0.28, 0.12, 0.035)
+	material.roughness = 0.9
+	stump.material_override = material
+	stump.visible = false
+	tree.add_child(stump)
+
+func _set_resource_state(tree: StaticBody3D, state: int) -> void:
+	var depleted := state == 2
+	var stump := tree.get_node_or_null("Stump") as MeshInstance3D
+	if stump != null:
+		stump.visible = depleted
+	for child in tree.find_children("*", "MeshInstance3D", true, false):
+		if child != stump:
+			child.visible = not depleted
+	var collision := tree.get_node_or_null("CollisionShape3D") as CollisionShape3D
+	if collision != null:
+		collision.disabled = depleted
+	if depleted:
+		tree.remove_from_group("Interactable")
+	elif not tree.is_in_group("Interactable"):
+		tree.add_to_group("Interactable")
