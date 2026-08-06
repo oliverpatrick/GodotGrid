@@ -13,6 +13,10 @@ func configure(content_bundle) -> void:
 func object_for(entity: int):
 	return objects.get(entity)
 
+func kind_for(entity: int) -> String:
+	var object = object_for(entity)
+	return str(object.get_meta("context_kind", "")) if object != null else ""
+
 func handle_message(id: int, message) -> void:
 	if message == null:
 		return
@@ -35,6 +39,7 @@ func _spawn_object(message: Dictionary) -> void:
 	var body: StaticBody3D = TreeScene.instantiate() if is_tree else StaticBody3D.new()
 	body.name = "Object_%d" % message.entity
 	body.set_meta("entity_id", message.entity)
+	body.set_meta("context_kind", "resource" if is_tree else "ground_item")
 	if not body.is_in_group("Interactable"):
 		body.add_to_group("Interactable")
 	if is_tree:

@@ -19,6 +19,9 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_apply_layout)
 	_apply_layout()
 
+func configure(content_bundle) -> void:
+	inventory.configure(content_bundle)
+
 func _apply_layout() -> void:
 	var logical_size := get_viewport().get_visible_rect().size
 	var window_size := DisplayServer.window_get_size()
