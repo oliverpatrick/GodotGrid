@@ -56,10 +56,15 @@ func _ready() -> void:
 	click_to_move.entity_clicked.connect(interaction_controller.interact)
 	click_to_move.destination_requested.connect(func(tile: Vector3i, _mode: int, _sequence: int): selection_feedback.select_tile(tile))
 	click_to_move.entity_clicked.connect(_on_entity_selected)
+	wire_run_toggle(hud, click_to_move)
 	var automatic_email := OS.get_environment("MVP_EMAIL")
 	var automatic_password := OS.get_environment("MVP_PASSWORD")
 	if not automatic_email.is_empty() and not automatic_password.is_empty():
 		_on_login_submitted.call_deferred(automatic_email, automatic_password)
+
+static func wire_run_toggle(hud_node, movement) -> void:
+	hud_node.run_toggled.connect(movement.set_run_enabled)
+	movement.set_run_enabled(hud_node.is_run_enabled())
 
 func _on_login_submitted(email: String, password: String) -> void:
 	auth_client.login(auth_url, email, password)

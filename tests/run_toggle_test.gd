@@ -1,6 +1,8 @@
 extends RefCounted
 
 const HUDScene = preload("res://ui/hud.tscn")
+const GameApp = preload("res://game_app.gd")
+const ClickToMove = preload("res://world/click_to_move.gd")
 
 static func run() -> bool:
 	var hud = HUDScene.instantiate()
@@ -25,5 +27,20 @@ static func run() -> bool:
 		printerr("Run button did not return to neutral state")
 		root.free()
 		return false
+	var movement := ClickToMove.new()
+	GameApp.wire_run_toggle(hud, movement)
+	hud.set_run_enabled(true)
+	if movement.effective_movement_mode(false) != 1:
+		printerr("HUD toggle did not enable movement running")
+		movement.free()
+		root.free()
+		return false
+	hud.set_run_enabled(false)
+	if movement.effective_movement_mode(false) != 0:
+		printerr("HUD toggle did not restore movement walking")
+		movement.free()
+		root.free()
+		return false
+	movement.free()
 	root.free()
 	return true
