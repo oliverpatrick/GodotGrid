@@ -10,7 +10,6 @@ signal entity_clicked(entity: int)
 var camera: Camera3D
 var stream
 var network
-var sequence := 0
 
 func configure(view_camera: Camera3D, world_stream, network_client) -> void:
 	camera = view_camera
@@ -56,12 +55,20 @@ func request_screen_destination(screen_position: Vector2, mode: int = 0):
 	var tile = world_to_visible_tile(hit.position, stream.loaded)
 	if tile == null:
 		return reject_unreachable()
-	sequence += 1
-	var frame := Protocol.encode_move(tile.x, tile.z, 0, mode, sequence)
+	var frame := build_move_request(tile, mode)
 	if network == null or network.send_frame(frame) != OK:
 		return reject_unreachable()
-	destination_requested.emit(tile, mode, sequence)
+	destination_requested.emit(tile, mode, _frame_sequence(frame))
 	return tile
+
+func build_move_request(tile: Vector3i, mode: int) -> PackedByteArray:
+	if network == null:
+		return PackedByteArray()
+	return Protocol.encode_move(tile.x, tile.z, tile.y, mode, network.next_world_sequence())
+
+func _frame_sequence(frame: PackedByteArray) -> int:
+	var size := frame.size()
+	return (frame[size - 4] << 24) | (frame[size - 3] << 16) | (frame[size - 2] << 8) | frame[size - 1]
 
 func reject_unreachable():
 	system_message.emit("I can't reach that")

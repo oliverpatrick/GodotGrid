@@ -2,6 +2,7 @@ extends RefCounted
 
 const HUDState = preload("res://ui/hud_state.gd")
 const InteractionController = preload("res://gameplay/interaction_controller.gd")
+const NetworkClient = preload("res://network/network_client.gd")
 
 static func run() -> bool:
 	var state = HUDState.new()
@@ -18,6 +19,9 @@ static func run() -> bool:
 	if state.messages[-1] != "inventory is full":
 		return false
 	var controller: Node = InteractionController.new()
+	var network: Node = NetworkClient.new()
+	controller.configure(network)
 	var frame: PackedByteArray = controller.build_drop_request(3)
 	controller.free()
+	network.free()
 	return frame.hex_encode() == "0012000703000100000001"
