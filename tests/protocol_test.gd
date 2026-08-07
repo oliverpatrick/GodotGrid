@@ -24,6 +24,14 @@ static func run() -> bool:
 	for request in requests:
 		if request[0].hex_encode() != request[1]:
 			return false
+	if Protocol.encode_combat_style(Protocol.COMBAT_STYLE_DEFENSIVE).hex_encode() != "0021000101":
+		return false
+	if not Protocol.encode_combat_style(2).is_empty():
+		return false
+	if Protocol.decode_message(Protocol.COMBAT_STYLE, PackedByteArray([1])) != {"style": 1}:
+		return false
+	if Protocol.decode_message(Protocol.COMBAT_STYLE, PackedByteArray([2])) != null:
+		return false
 	var spawn_bytes: PackedByteArray = str(vectors[5].hex).hex_decode()
 	var spawn_frame = Protocol.decode_frame(spawn_bytes)
 	var spawn = Protocol.decode_message(spawn_frame.id, spawn_frame.payload)

@@ -69,6 +69,7 @@ func _ready() -> void:
 	context_menu.action_selected.connect(_on_context_action)
 	hud.inventory.context_requested.connect(_on_inventory_context_requested)
 	hud.inventory.slot_clicked.connect(_on_inventory_slot_clicked)
+	hud.game_tabs.combat_style_requested.connect(interaction_controller.set_combat_style)
 	wire_run_toggle(hud, click_to_move)
 	var automatic_email := OS.get_environment("MVP_EMAIL")
 	var automatic_password := OS.get_environment("MVP_PASSWORD")

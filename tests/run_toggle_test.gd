@@ -13,26 +13,37 @@ static func run() -> bool:
 	var skill_grid: GridContainer = hud.get_node("GameTabs/HSplitContainer/TabContainer/SkillsTab/SkillGrid")
 	var inventory_tab: Control = hud.get_node("GameTabs/HSplitContainer/TabContainer/InventoryTab")
 	var skills_tab: Control = hud.get_node("GameTabs/HSplitContainer/TabContainer/SkillsTab")
-	if skill_grid.columns != 3 or skill_grid.get_child_count() != 5:
+	var combat_tab: Control = hud.get_node("GameTabs/HSplitContainer/TabContainer/CombatTab")
+	if skill_grid.columns != 2 or skill_grid.get_child_count() != 5:
 		root.free()
 		return false
-	if not inventory_tab.visible or skills_tab.visible:
+	if not inventory_tab.visible or skills_tab.visible or combat_tab.visible:
 		printerr("Inventory tab is not selected initially")
 		root.free()
 		return false
 	hud.game_tabs.select_tab("skills")
-	if inventory_tab.visible or not skills_tab.visible:
+	if inventory_tab.visible or not skills_tab.visible or combat_tab.visible:
 		printerr("Skills tab did not replace the inventory tab")
 		root.free()
 		return false
 	hud.game_tabs.toggle_tab("skills")
-	if inventory_tab.visible or skills_tab.visible:
+	if inventory_tab.visible or skills_tab.visible or combat_tab.visible:
 		printerr("Selecting the active tab did not close it")
 		root.free()
 		return false
 	hud.game_tabs.toggle_tab("skills")
-	if inventory_tab.visible or not skills_tab.visible:
+	if inventory_tab.visible or not skills_tab.visible or combat_tab.visible:
 		printerr("Closed skills tab did not reopen")
+		root.free()
+		return false
+	hud.game_tabs.select_tab("combat")
+	if inventory_tab.visible or skills_tab.visible or not combat_tab.visible:
+		printerr("Combat tab did not replace the skills tab")
+		root.free()
+		return false
+	hud.game_tabs.toggle_tab("combat")
+	if inventory_tab.visible or skills_tab.visible or combat_tab.visible:
+		printerr("Selecting the active combat tab did not close it")
 		root.free()
 		return false
 	if button.text != "Run" or hud.is_run_enabled():

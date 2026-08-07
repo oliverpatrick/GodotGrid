@@ -18,7 +18,7 @@ static func run() -> bool:
 	)
 	var expected_skills := ["Health", "Attack", "Defence", "Harvesting", "Perception"]
 	if skill_grid != null:
-		if skill_grid.columns != 3 or skill_grid.get_child_count() != expected_skills.size():
+		if skill_grid.columns != 2 or skill_grid.get_child_count() != expected_skills.size():
 			scenes_have_expected_hud_structure = false
 		else:
 			for index in range(expected_skills.size()):

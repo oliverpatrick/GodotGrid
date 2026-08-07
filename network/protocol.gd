@@ -12,6 +12,7 @@ const INSPECT_INVENTORY := 0x0014
 const USE_INVENTORY := 0x0015
 const USE_WORLD := 0x0016
 const CHAT := 0x0020
+const SET_COMBAT_STYLE := 0x0021
 const CONNECT_ACK := 0x0101
 const ENTITY_SPAWN := 0x0103
 const ENTITY_DESPAWN := 0x0104
@@ -29,6 +30,10 @@ const ENTITY_FACE := 0x0126
 const ENTITY_HEALTH := 0x0127
 const ENTITY_HIT := 0x0128
 const DIALOGUE := 0x0129
+const COMBAT_STYLE := 0x012A
+
+const COMBAT_STYLE_AGGRESSIVE := 0
+const COMBAT_STYLE_DEFENSIVE := 1
 
 const SKILL_HEALTH := 0
 const SKILL_ATTACK := 1
@@ -111,6 +116,11 @@ static func encode_chat(text: String) -> PackedByteArray:
 	payload.append_array(bytes)
 	return encode_frame(CHAT, payload)
 
+static func encode_combat_style(style: int) -> PackedByteArray:
+	if style < COMBAT_STYLE_AGGRESSIVE or style > COMBAT_STYLE_DEFENSIVE:
+		return PackedByteArray()
+	return encode_frame(SET_COMBAT_STYLE, PackedByteArray([style]))
+
 static func decode_message(id: int, payload: PackedByteArray):
 	match id:
 		CONNECT_ACK, ENTITY_DESPAWN:
@@ -190,6 +200,10 @@ static func decode_message(id: int, payload: PackedByteArray):
 			if text == null:
 				return null
 			return {"speaker": _u32(payload, 0), "text": text}
+		COMBAT_STYLE:
+			if payload.size() != 1 or payload[0] > COMBAT_STYLE_DEFENSIVE:
+				return null
+			return {"style": payload[0]}
 	return null
 
 static func _strict_utf8(bytes: PackedByteArray):

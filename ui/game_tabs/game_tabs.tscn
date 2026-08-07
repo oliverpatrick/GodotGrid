@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://5g251f7s00n5"]
+[gd_scene format=3 uid="uid://5g251f7s00n5"]
 
 [ext_resource type="PackedScene" uid="uid://csoygooj0ox56" path="res://ui/inventory/inventory_panel.tscn" id="1_itbpd"]
 [ext_resource type="Script" uid="uid://4cl1vwed0q7t" path="res://ui/game_tabs/game_tabs.gd" id="2_tabs"]
@@ -47,9 +47,9 @@ layout_mode = 2
 
 [node name="SkillGrid" type="GridContainer" parent="HSplitContainer/TabContainer/SkillsTab" unique_id=990874123]
 layout_mode = 2
-columns = 3
+columns = 2
 
-[node name="Health" type="Label" parent="HSplitContainer/TabContainer/SkillsTab/SkillGrid"]
+[node name="Health" type="Label" parent="HSplitContainer/TabContainer/SkillsTab/SkillGrid" unique_id=353552675]
 custom_minimum_size = Vector2(100, 56)
 layout_mode = 2
 text = "Health
@@ -57,7 +57,7 @@ Level 1  XP 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Attack" type="Label" parent="HSplitContainer/TabContainer/SkillsTab/SkillGrid"]
+[node name="Attack" type="Label" parent="HSplitContainer/TabContainer/SkillsTab/SkillGrid" unique_id=1211829665]
 custom_minimum_size = Vector2(100, 56)
 layout_mode = 2
 text = "Attack
@@ -65,7 +65,7 @@ Level 1  XP 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Defence" type="Label" parent="HSplitContainer/TabContainer/SkillsTab/SkillGrid"]
+[node name="Defence" type="Label" parent="HSplitContainer/TabContainer/SkillsTab/SkillGrid" unique_id=1300323569]
 custom_minimum_size = Vector2(100, 56)
 layout_mode = 2
 text = "Defence
@@ -88,6 +88,31 @@ text = "Perception
 Level 1  XP 0"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="CombatTab" type="PanelContainer" parent="HSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="StyleOptions" type="VBoxContainer" parent="HSplitContainer/TabContainer/CombatTab"]
+layout_mode = 2
+
+[node name="Heading" type="Label" parent="HSplitContainer/TabContainer/CombatTab/StyleOptions"]
+layout_mode = 2
+text = "Combat style"
+
+[node name="Aggressive" type="Button" parent="HSplitContainer/TabContainer/CombatTab/StyleOptions"]
+layout_mode = 2
+disabled = true
+toggle_mode = true
+text = "Aggressive
+Attack XP"
+
+[node name="Defensive" type="Button" parent="HSplitContainer/TabContainer/CombatTab/StyleOptions"]
+layout_mode = 2
+disabled = true
+toggle_mode = true
+text = "Defensive
+Defence XP"
 
 [node name="GridContainer" type="GridContainer" parent="HSplitContainer" unique_id=1454566963]
 layout_mode = 2
@@ -123,11 +148,10 @@ custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 text = "Set"
 
-[node name="Button7" type="Button" parent="HSplitContainer/GridContainer" unique_id=1312972277]
+[node name="CombatButton" type="Button" parent="HSplitContainer/GridContainer" unique_id=1312972277]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
-disabled = true
-text = "X"
+text = "Cmb"
 
 [node name="Button8" type="Button" parent="HSplitContainer/GridContainer" unique_id=1953242351]
 custom_minimum_size = Vector2(48, 48)

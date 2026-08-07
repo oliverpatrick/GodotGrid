@@ -52,6 +52,12 @@ func build_use_world_request(source_slot: int, entity: int) -> PackedByteArray:
 func send_nearby_chat(text: String) -> void:
 	_send(Protocol.encode_chat(text.strip_edges()))
 
+func set_combat_style(style: int) -> void:
+	_send(build_combat_style_request(style))
+
+func build_combat_style_request(style: int) -> PackedByteArray:
+	return Protocol.encode_combat_style(style)
+
 func _send(frame: PackedByteArray) -> void:
 	if network != null and not frame.is_empty():
 		network.send_frame(frame)

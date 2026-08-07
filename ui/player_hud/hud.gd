@@ -81,6 +81,8 @@ func handle_message(id: int, message) -> void:
 			add_system_message(message.text)
 		Protocol.RESOURCE_STATE:
 			state.apply_resource(message.entity, message.state)
+		Protocol.COMBAT_STYLE:
+			game_tabs.acknowledge_combat_style(message.style)
 
 func add_system_message(text: String) -> void:
 	state.add_message(text)
