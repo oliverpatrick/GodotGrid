@@ -1,15 +1,15 @@
-[gd_scene format=3 uid="uid://yaiwisaay14y"]
+[gd_scene load_steps=15 format=3 uid="uid://yaiwisaay14y"]
 
 [ext_resource type="Script" uid="uid://b87y10df164th" path="res://game_app.gd" id="1_wc7r7"]
 [ext_resource type="Script" uid="uid://cuqqjvkjmlqlo" path="res://network/auth_client.gd" id="2_auth"]
 [ext_resource type="Script" uid="uid://bqs3xgj02wd4n" path="res://network/network_client.gd" id="3_network"]
-[ext_resource type="PackedScene" path="res://ui/login_screen/login_screen.tscn" id="4_login"]
+[ext_resource type="PackedScene" uid="uid://lqxvsowpmkyp" path="res://ui/login_screen/login_screen.tscn" id="4_login"]
 [ext_resource type="Script" uid="uid://fto3lx3taf7e" path="res://world/player_registry.gd" id="5_registry"]
 [ext_resource type="Script" uid="uid://cdbpia4ed1cai" path="res://world/click_to_move.gd" id="6_click"]
 [ext_resource type="Script" uid="uid://cndhhjd00rhn4" path="res://camera_controller.gd" id="7_camera"]
 [ext_resource type="Script" uid="uid://bpvgkvfehutko" path="res://world/object_registry.gd" id="8_objects"]
 [ext_resource type="Script" uid="uid://qyjws266l3sh" path="res://gameplay/interaction_controller.gd" id="9_interaction"]
-[ext_resource type="PackedScene" path="res://ui/player_hud/hud.tscn" id="10_hud"]
+[ext_resource type="PackedScene" uid="uid://01ughi8s4iax" path="res://ui/player_hud/hud.tscn" id="10_hud"]
 [ext_resource type="Script" uid="uid://ba1r5o3rx0uum" path="res://gameplay/selection_feedback.gd" id="11_selection"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wc7r7"]
