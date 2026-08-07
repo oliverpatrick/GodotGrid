@@ -22,8 +22,8 @@ func _ready() -> void:
 	_fill = MeshInstance3D.new()
 	_fill_mesh = QuadMesh.new()
 	_fill_mesh.size = Vector2(WIDTH, HEIGHT)
+	_fill_mesh.center_offset.z = 0.001
 	_fill.mesh = _fill_mesh
-	_fill.position.z = 0.001
 	_fill.material_override = _material(Color(0.1, 0.8, 0.2))
 	add_child(_fill)
 
