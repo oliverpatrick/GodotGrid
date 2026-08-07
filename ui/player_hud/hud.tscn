@@ -1,8 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://01ughi8s4iax"]
+[gd_scene format=3 uid="uid://01ughi8s4iax"]
 
 [ext_resource type="Script" uid="uid://bx62eep8f68si" path="res://ui/player_hud/hud.gd" id="1"]
-[ext_resource type="PackedScene" uid="uid://csoygooj0ox56" path="res://ui/inventory/inventory_panel.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://ytwtm0jw084w" path="res://ui/chatbox/chatbox.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://5g251f7s00n5" path="res://ui/game_tabs/game_tabs.tscn" id="4_ot66e"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_run_neutral"]
 bg_color = Color(0.18, 0.2, 0.24, 0.96)
@@ -18,52 +18,27 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[node name="HUD" type="CanvasLayer"]
+[node name="HUD" type="CanvasLayer" unique_id=1813970386]
 visible = false
 script = ExtResource("1")
 
-[node name="InventoryPanel" parent="." instance=ExtResource("2")]
-offset_left = 970.0
-offset_top = 18.0
-offset_right = 1262.0
-offset_bottom = 344.0
-
-[node name="Chatbox" parent="." instance=ExtResource("3")]
+[node name="Chatbox" parent="." unique_id=984604373 instance=ExtResource("3")]
 offset_left = 18.0
 offset_top = 500.0
 offset_right = 486.0
 offset_bottom = 702.0
 
-[node name="SkillPanel" type="PanelContainer" parent="."]
-offset_left = 18.0
-offset_top = 18.0
-offset_right = 338.0
-offset_bottom = 100.0
-
-[node name="SkillGrid" type="GridContainer" parent="SkillPanel"]
-columns = 2
-
-[node name="Harvesting" type="Label" parent="SkillPanel/SkillGrid"]
-custom_minimum_size = Vector2(154, 68)
-text = "Harvesting\nLevel 1  XP 0"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Perception" type="Label" parent="SkillPanel/SkillGrid"]
-custom_minimum_size = Vector2(154, 68)
-text = "Perception\nLevel 1  XP 0"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="RunButton" type="Button" parent="."]
+[node name="RunButton" type="Button" parent="." unique_id=1903776260]
 offset_left = 18.0
 offset_top = 104.0
 offset_right = 110.0
 offset_bottom = 152.0
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_run_neutral")
-theme_override_styles/hover = SubResource("StyleBoxFlat_run_neutral")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_run_active")
+theme_override_styles/hover = SubResource("StyleBoxFlat_run_neutral")
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_run_active")
 toggle_mode = true
 text = "Run"
+
+[node name="GameTabs" parent="." unique_id=1267738720 instance=ExtResource("4_ot66e")]

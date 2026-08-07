@@ -36,12 +36,25 @@ func render_slots(slots: Array) -> void:
 			buttons[index].text = "AXE" if item.item == 0 else "LOG"
 			buttons[index].tooltip_text = "Basic axe" if item.item == 0 else "Mutated log — right-click to drop"
 
+# func _slot_input(event: InputEvent, slot: int) -> void:
+	# if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+	# 	if slot < rendered_slots.size() and rendered_slots[slot] != null:
+	# 		context_requested.emit(slot, buttons[slot].global_position + event.position)
+	# elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	# 	if slot < rendered_slots.size() and rendered_slots[slot] != null:
+	# 		slot_clicked.emit(slot)
 func _slot_input(event: InputEvent, slot: int) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
-		if slot < rendered_slots.size() and rendered_slots[slot] != null:
-			context_requested.emit(slot, buttons[slot].global_position + event.position)
-	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if slot < rendered_slots.size() and rendered_slots[slot] != null:
+	if event is InputEventMouseButton and event.pressed:
+		if slot >= rendered_slots.size() or rendered_slots[slot] == null:
+			return
+
+		if event.button_index == MOUSE_BUTTON_RIGHT:
+			context_requested.emit(
+				slot,
+				get_viewport().get_mouse_position()
+			)
+
+		elif event.button_index == MOUSE_BUTTON_LEFT:
 			slot_clicked.emit(slot)
 
 func item_droppable(slot: int) -> bool:

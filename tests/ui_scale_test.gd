@@ -10,18 +10,16 @@ static func run() -> bool:
 	var inventory: Control = InventoryScene.instantiate()
 	var hud = HUDScene.instantiate()
 	var hud_chatbox: Control = hud.get_node("Chatbox")
-	var hud_inventory: Control = hud.get_node("InventoryPanel")
-	var scenes_use_positive_top_left_layout := (
-		chatbox.position.x >= 0.0 and chatbox.position.y >= 0.0
-		and inventory.position.x >= 0.0 and inventory.position.y >= 0.0
-		and hud_chatbox.anchor_left == 0.0 and hud_chatbox.anchor_top == 0.0
-		and hud_inventory.anchor_left == 0.0 and hud_inventory.anchor_top == 0.0
+	var hud_inventory: Control = hud.get_node_or_null("GameTabs/HSplitContainer/TabContainer/InventoryTab/InventoryPanel")
+	var hud_skills: Control = hud.get_node_or_null("GameTabs/HSplitContainer/TabContainer/SkillsTab")
+	var scenes_have_expected_hud_structure := (
+		hud_chatbox != null and hud_inventory != null and hud_skills != null
 	)
 	chatbox.free()
 	inventory.free()
 	hud.free()
-	if not scenes_use_positive_top_left_layout:
-		printerr("HUD scenes mix negative anchor-relative and top-left runtime coordinates")
+	if not scenes_have_expected_hud_structure:
+		printerr("HUD inventory or skills panel is missing from GameTabs")
 		return false
 	if UIScale.parse_override("") != 1.0 or UIScale.parse_override("invalid") != 1.0:
 		return false

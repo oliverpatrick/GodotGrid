@@ -1,8 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://csoygooj0ox56"]
+[gd_scene format=3 uid="uid://csoygooj0ox56"]
 
 [ext_resource type="Script" uid="uid://b4h3g0nbgfshh" path="res://ui/inventory/inventory_panel.gd" id="1"]
 
-[node name="InventoryPanel" type="PanelContainer"]
-offset_right = 292.0
-offset_bottom = 326.0
+[node name="InventoryPanel" type="PanelContainer" unique_id=1008581937]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -292.0
+offset_top = -326.0
+grow_horizontal = 0
+grow_vertical = 0
 script = ExtResource("1")
