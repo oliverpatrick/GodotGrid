@@ -1,7 +1,7 @@
 class_name GameNetworkClient
 extends Node
 
-const Protocol = preload("res://network/protocol.gd")
+const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
 
 signal connected(entity: int)
 signal disconnected(reason: String)
@@ -16,8 +16,10 @@ var _handshake_sent := false
 var entity_id := 0
 var _was_transport_connected := false
 var _disconnect_reported := false
+var _world_sequence := 0
 
 func connect_to_world(host: String, port: int, ticket: String, content_hash: String) -> Error:
+	_world_sequence = 0
 	_ticket = ticket
 	_content_hash = content_hash
 	_handshake_sent = false
@@ -26,6 +28,10 @@ func connect_to_world(host: String, port: int, ticket: String, content_hash: Str
 	entity_id = 0
 	receive_buffer.clear()
 	return peer.connect_to_host(host, port)
+
+func next_world_sequence() -> int:
+	_world_sequence += 1
+	return _world_sequence
 
 func _process(_delta: float) -> void:
 	peer.poll()

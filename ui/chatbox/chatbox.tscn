@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://ytwtm0jw084w"]
+
+[ext_resource type="Script" uid="uid://rm0x6pb6lqve" path="res://ui/chatbox/chatbox.gd" id="1"]
+
+[node name="Chatbox" type="PanelContainer"]
+offset_right = 468.0
+offset_bottom = 202.0
+script = ExtResource("1")

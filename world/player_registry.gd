@@ -1,8 +1,8 @@
 class_name PlayerRegistry
 extends Node3D
 
-const Protocol = preload("res://network/protocol.gd")
-const RemotePlayerScript = preload("res://world/remote_player.gd")
+const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
+const PLAYER_SCENE = preload("uid://tvjj76iceovt") # assets/player/player.tscn
 
 signal local_player_ready(player: Node3D)
 
@@ -30,13 +30,15 @@ func handle_message(id: int, message) -> void:
 			if players.has(message.entity):
 				players[message.entity].queue_free()
 				players.erase(message.entity)
+		Protocol.PLAYER_ACTION:
+			apply_action(message.entity, message.action)
 
 func _spawn_player(message: Dictionary) -> void:
 	var index: int = message.entity
 	if players.has(index):
 		players[index].snap_to_tile(message.x, message.z, message.plane)
 		return
-	var player: Node3D = RemotePlayerScript.new()
+	var player: Node3D = PLAYER_SCENE.instantiate()
 	player.name = "Player_%d" % index
 	player.configure(index, message.name, bundle)
 	player.snap_to_tile(message.x, message.z, message.plane)
@@ -44,3 +46,7 @@ func _spawn_player(message: Dictionary) -> void:
 	players[index] = player
 	if index == local_index:
 		local_player_ready.emit(player)
+
+func apply_action(entity: int, action: int) -> void:
+	if players.has(entity):
+		players[entity].set_action(action)

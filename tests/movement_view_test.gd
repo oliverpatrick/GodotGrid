@@ -23,9 +23,32 @@ static func run() -> bool:
 	var messages: Array[String] = []
 	controller.system_message.connect(func(text: String): messages.append(text))
 	controller.reject_unreachable()
-	controller.free()
 	if messages != ["I can't reach that"]:
+		controller.free()
 		return false
+	if controller.is_run_enabled():
+		printerr("run toggle starts enabled")
+		controller.free()
+		return false
+	if controller.effective_movement_mode(false) != 0:
+		printerr("disabled toggle does not walk without Ctrl")
+		controller.free()
+		return false
+	if controller.effective_movement_mode(true) != 1:
+		printerr("Ctrl does not temporarily run")
+		controller.free()
+		return false
+	controller.set_run_enabled(true)
+	if not controller.is_run_enabled() or controller.effective_movement_mode(false) != 1:
+		printerr("persistent toggle does not run")
+		controller.free()
+		return false
+	controller.set_run_enabled(false)
+	if controller.effective_movement_mode(false) != 0:
+		printerr("turning run off does not restore walking")
+		controller.free()
+		return false
+	controller.free()
 	var registry := ObjectRegistry.new()
 	var sentinel := Node3D.new()
 	registry.objects[42] = sentinel

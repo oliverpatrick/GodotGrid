@@ -1,7 +1,7 @@
 class_name ContentLoader
 extends RefCounted
 
-const ContentBundle = preload("res://content/content_manifest.gd")
+const ContentBundleScript = preload("uid://c1d1vjf4433ls") # content/content_manifest.gd
 static var last_error := ""
 
 static func load_bundle(root: String):
@@ -17,7 +17,7 @@ static func load_bundle(root: String):
 	var references: Array = manifest.get("regions", [])
 	if references.size() != 64:
 		return _fail("expected 64 region references")
-	var bundle = ContentBundle.new()
+	var bundle = ContentBundleScript.new()
 	bundle.root = root
 	bundle.manifest = manifest
 	bundle.definitions = definitions
@@ -25,16 +25,16 @@ static func load_bundle(root: String):
 	var hash_context := HashingContext.new()
 	hash_context.start(HashingContext.HASH_SHA256)
 	hash_context.update(_canonical_json(definitions).to_utf8_buffer())
-	for reference in references:
-		if not reference is Dictionary:
+	for region_entry in references:
+		if not region_entry is Dictionary:
 			return _fail("invalid region reference")
-		var relative_path := str(reference.get("path", ""))
+		var relative_path := str(region_entry.get("path", ""))
 		if relative_path.is_empty() or relative_path.is_absolute_path() or ".." in relative_path:
 			return _fail("unsafe region path")
 		var region = _read_json(root.path_join("source/world").path_join(relative_path))
-		if not _valid_region(region, reference):
+		if not _valid_region(region, region_entry):
 			return _fail("invalid region %s" % relative_path)
-		var key := "%d:%d:%d" % [reference.x, reference.z, reference.plane]
+		var key := "%d:%d:%d" % [region_entry.x, region_entry.z, region_entry.plane]
 		if bundle.regions.has(key):
 			return _fail("duplicate region %s" % key)
 		bundle.regions[key] = region
@@ -51,10 +51,10 @@ static func _read_json(path: String):
 		return null
 	return JSON.parse_string(FileAccess.get_file_as_string(path))
 
-static func _valid_region(region, reference: Dictionary) -> bool:
+static func _valid_region(region, region_entry: Dictionary) -> bool:
 	if not region is Dictionary:
 		return false
-	if region.get("x") != reference.get("x") or region.get("z") != reference.get("z") or region.get("plane") != reference.get("plane"):
+	if region.get("x") != region_entry.get("x") or region.get("z") != region_entry.get("z") or region.get("plane") != region_entry.get("plane"):
 		return false
 	if region.get("width") != 64 or region.get("depth") != 64:
 		return false

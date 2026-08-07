@@ -1,7 +1,9 @@
 extends "res://terrain_generator.gd"
 
-const ContentLoaderScript = preload("res://content/content_loader.gd")
-const Protocol = preload("res://network/protocol.gd")
+const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
+const ContextActionsScript = preload("uid://c2b253hr1kstw") # gameplay/context_actions.gd
+const UseTargetingScript = preload("uid://tol3ubn1sah4") # gameplay/use_targeting.gd
+const ContextMenuScene = preload("uid://caafyydy1os1") # ui/context_menu/context_menu.tscn
 signal local_system_message(text: String)
 
 @export var auth_url := "http://127.0.0.1:8080"
@@ -18,9 +20,16 @@ signal local_system_message(text: String)
 @onready var interaction_controller: Node = $InteractionController
 @onready var selection_feedback: Node3D = $SelectionFeedback
 @onready var hud: CanvasLayer = $HUD
+var context_menu: PopupMenu
 var resolved_content_root := ""
+var use_targeting = UseTargetingScript.new()
+var _context_kind := ""
+var _context_entity := 0
+var _context_slot := -1
 
 func _ready() -> void:
+	context_menu = ContextMenuScene.instantiate()
+	add_child(context_menu)
 	resolved_content_root = content_root
 	if resolved_content_root.is_empty():
 		resolved_content_root = OS.get_environment("GAME_CONTENT_ROOT")
@@ -53,13 +62,22 @@ func _ready() -> void:
 	player_registry.local_player_ready.connect(follow_camera.configure)
 	click_to_move.system_message.connect(local_system_message.emit)
 	click_to_move.system_message.connect(hud.add_system_message)
-	click_to_move.entity_clicked.connect(interaction_controller.interact)
-	click_to_move.destination_requested.connect(func(tile: Vector3i, _mode: int, _sequence: int): selection_feedback.select_tile(tile))
-	click_to_move.entity_clicked.connect(_on_entity_selected)
+	click_to_move.system_message.connect(func(_text: String): _cancel_use())
+	click_to_move.entity_clicked.connect(_on_entity_clicked)
+	click_to_move.context_requested.connect(_on_world_context_requested)
+	click_to_move.destination_requested.connect(_on_destination_requested)
+	context_menu.action_selected.connect(_on_context_action)
+	hud.inventory.context_requested.connect(_on_inventory_context_requested)
+	hud.inventory.slot_clicked.connect(_on_inventory_slot_clicked)
+	wire_run_toggle(hud, click_to_move)
 	var automatic_email := OS.get_environment("MVP_EMAIL")
 	var automatic_password := OS.get_environment("MVP_PASSWORD")
 	if not automatic_email.is_empty() and not automatic_password.is_empty():
 		_on_login_submitted.call_deferred(automatic_email, automatic_password)
+
+static func wire_run_toggle(hud_node, movement) -> void:
+	hud_node.run_toggled.connect(movement.set_run_enabled)
+	movement.set_run_enabled(hud_node.is_run_enabled())
 
 func _on_login_submitted(email: String, password: String) -> void:
 	auth_client.login(auth_url, email, password)
@@ -79,6 +97,7 @@ func _on_world_connected(_entity: int) -> void:
 		object_registry.configure(content_bundle)
 		interaction_controller.configure(network_client)
 		click_to_move.configure(follow_camera, stream, network_client)
+		hud.configure(content_bundle)
 		login_screen.hide()
 		hud.show()
 	else:
@@ -96,3 +115,50 @@ func _on_entity_selected(entity: int) -> void:
 	var object = object_registry.object_for(entity)
 	if object != null:
 		selection_feedback.select_object(object)
+
+func _on_entity_clicked(entity: int) -> void:
+	_on_entity_selected(entity)
+	if use_targeting.active():
+		interaction_controller.use_world(use_targeting.take_source(), entity)
+		hud.inventory.set_selected_slot(-1)
+	else:
+		interaction_controller.interact(entity)
+
+func _on_destination_requested(tile: Vector3i, _mode: int, _sequence: int) -> void:
+	selection_feedback.select_tile(tile)
+	_cancel_use()
+
+func _on_world_context_requested(entity: int, screen_position: Vector2) -> void:
+	_context_kind = "world"
+	_context_entity = entity
+	_context_slot = -1
+	var kind: String = object_registry.kind_for(entity)
+	if not kind.is_empty():
+		context_menu.open(ContextActionsScript.world_actions(kind), screen_position)
+
+func _on_inventory_context_requested(slot: int, screen_position: Vector2) -> void:
+	_context_kind = "inventory"
+	_context_slot = slot
+	_context_entity = 0
+	context_menu.open(ContextActionsScript.inventory_actions(hud.inventory.item_droppable(slot)), screen_position)
+
+func _on_context_action(action_id: String) -> void:
+	match action_id:
+		"world.primary": interaction_controller.interact(_context_entity)
+		"world.inspect": interaction_controller.inspect_world(_context_entity)
+		"inventory.use":
+			use_targeting.select_source(_context_slot)
+			hud.inventory.set_selected_slot(_context_slot)
+		"inventory.inspect": interaction_controller.inspect_inventory(_context_slot)
+		"inventory.drop": interaction_controller.drop_slot(_context_slot)
+
+func _on_inventory_slot_clicked(slot: int) -> void:
+	if not use_targeting.active():
+		return
+	interaction_controller.use_inventory(use_targeting.take_source(), slot)
+	hud.inventory.set_selected_slot(-1)
+
+func _cancel_use() -> void:
+	use_targeting.cancel()
+	if is_instance_valid(hud) and is_instance_valid(hud.inventory):
+		hud.inventory.set_selected_slot(-1)

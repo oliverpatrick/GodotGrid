@@ -15,12 +15,15 @@ func _ready() -> void:
 	layout.add_child(channel)
 	history = RichTextLabel.new()
 	history.bbcode_enabled = true
-	history.custom_minimum_size = Vector2(440, 128)
+	history.custom_minimum_size = Vector2(0, 128)
+	history.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	history.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	history.scroll_following = true
 	layout.add_child(history)
 	input = LineEdit.new()
 	input.placeholder_text = "Press Enter to chat nearby"
 	input.max_length = 160
+	input.custom_minimum_size.y = 48
 	input.text_submitted.connect(_submit)
 	layout.add_child(input)
 

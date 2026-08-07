@@ -17,7 +17,15 @@ func run_tests() -> void:
 		preload("res://tests/network_client_test.gd"),
 		preload("res://tests/auth_client_test.gd"),
 		preload("res://tests/movement_view_test.gd"),
+		preload("res://tests/world_command_sequence_test.gd"),
+		preload("res://tests/player_scene_test.gd"),
+		preload("res://tests/player_registry_test.gd"),
 		preload("res://tests/selection_feedback_test.gd"),
+		preload("res://tests/tree_presentation_test.gd"),
+		preload("res://tests/ui_scale_test.gd"),
+		preload("res://tests/run_toggle_test.gd"),
+		preload("res://tests/context_menu_test.gd"),
+		preload("res://tests/context_target_test.gd"),
 		preload("res://tests/hud_state_test.gd"),
 	]
 	for suite in suites:
@@ -25,6 +33,10 @@ func run_tests() -> void:
 			printerr("GODOT_TEST_FAILED: %s" % suite.resource_path)
 			quit(1)
 			return
+	if not preload("res://tests/context_menu_test.gd").placement_is_clamped():
+		printerr("GODOT_TEST_FAILED: context menu popup placement")
+		quit(1)
+		return
 	if not await terrain_accepts_ground_clicks():
 		printerr("GODOT_TEST_FAILED: terrain ground clicks do not hit the loaded region")
 		quit(1)

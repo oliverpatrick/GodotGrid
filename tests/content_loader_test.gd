@@ -11,4 +11,10 @@ static func run() -> bool:
 	if bundle == null:
 		printerr(ContentLoader.last_error)
 		return false
-	return bundle.regions.size() == 64 and bundle.gameplay_hash.length() == 64
+	var axe = bundle.item_by_wire_id(0)
+	var log = bundle.item_by_wire_id(1)
+	var tree = bundle.definition_by_id("resource.mutated_tree")
+	return bundle.regions.size() == 64 and bundle.gameplay_hash.length() == 64 \
+		and axe.perception_xp == 10 and not axe.droppable \
+		and log.perception_xp == 10 and log.droppable \
+		and tree.perception_xp == 10 and not str(tree.inspect_text).is_empty()

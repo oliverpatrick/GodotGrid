@@ -4,6 +4,8 @@ extends RefCounted
 var slots: Array = []
 var harvesting_xp := 0
 var harvesting_level := 1
+var perception_xp := 0
+var perception_level := 1
 var resources: Dictionary = {}
 var messages: Array[String] = []
 
@@ -21,10 +23,12 @@ func apply_inventory(incoming: Array) -> void:
 			slots[slot] = item.duplicate()
 
 func apply_skill(skill: int, xp: int) -> void:
-	if skill != 0:
-		return
-	harvesting_xp = xp
-	harvesting_level = level_for_xp(xp)
+	if skill == 0:
+		harvesting_xp = xp
+		harvesting_level = level_for_xp(xp)
+	elif skill == 1:
+		perception_xp = xp
+		perception_level = level_for_xp(xp)
 
 func apply_resource(entity: int, state: int) -> void:
 	resources[entity] = state

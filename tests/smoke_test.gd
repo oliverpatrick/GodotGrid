@@ -9,6 +9,13 @@ static func run() -> bool:
 	if ProjectSettings.get_setting("application/config/name") != "GodotGrid" or scene == null:
 		return false
 	var instance := scene.instantiate()
-	var ok: bool = instance.get_script() != null and instance.get_node_or_null("SelectionFeedback") != null
+	var login := instance.get_node_or_null("LoginScreen")
+	var hud := instance.get_node_or_null("HUD")
+	var ok: bool = (
+		instance.get_script() != null
+		and instance.get_node_or_null("SelectionFeedback") != null
+		and login != null and login.get_script() != null
+		and hud != null and hud.get_script() != null
+	)
 	instance.free()
 	return ok

@@ -1,7 +1,7 @@
 class_name WorldStream
 extends Node3D
 
-const RegionMeshBuilder = preload("res://world/region_mesh_builder.gd")
+const RegionMeshBuilderScript = preload("uid://cmajy2ls4qmaf") # world/region_mesh_builder.gd
 var bundle
 var loaded: Dictionary = {}
 
@@ -15,7 +15,7 @@ func load_region(key: String) -> bool:
 	if region.plane != 0:
 		loaded[key] = null
 		return true
-	var instance := RegionMeshBuilder.build(region)
+	var instance := RegionMeshBuilderScript.build(region)
 	if instance == null:
 		return false
 	add_child(instance)

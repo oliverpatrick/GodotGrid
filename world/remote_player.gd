@@ -1,7 +1,8 @@
 class_name RemotePlayer
 extends Node3D
 
-const TerrainHeight = preload("res://world/terrain_height.gd")
+const TerrainHeightScript = preload("uid://ctl1kxhgld3tn") # world/terrain_height.gd
+const PlayerAnimationControllerScript = preload("uid://ch55e8gtqv5nx") # world/player_animation_controller.gd
 
 var player_index := -1
 var display_name := ""
@@ -11,6 +12,7 @@ var _from := Vector3.ZERO
 var _target := Vector3.ZERO
 var _elapsed := 0.0
 var _duration := 0.6
+var animation_controller
 
 func _ready() -> void:
 	if get_child_count() == 0:
@@ -26,10 +28,11 @@ func _ready() -> void:
 		body.material_override = material
 		add_child(body)
 
-func configure(index: int, name: String, bundle) -> void:
+func configure(index: int, player_name: String, bundle) -> void:
 	player_index = index
-	display_name = name
+	display_name = player_name
 	terrain_bundle = bundle
+	_ensure_animation_controller()
 
 func snap_to_tile(x: int, z: int, next_plane: int) -> void:
 	plane = next_plane
@@ -37,6 +40,9 @@ func snap_to_tile(x: int, z: int, next_plane: int) -> void:
 	_from = _target
 	position = _target
 	_elapsed = _duration
+	_ensure_animation_controller()
+	if animation_controller != null:
+		animation_controller.movement_finished()
 
 func confirm_tile(x: int, z: int, next_plane: int, tick_seconds: float) -> void:
 	var next := _tile_position(x, z, next_plane)
@@ -45,21 +51,40 @@ func confirm_tile(x: int, z: int, next_plane: int, tick_seconds: float) -> void:
 		return
 	if next.is_equal_approx(_target):
 		return
+	var tile_distance := maxi(absi(int(round(next.x - _target.x))), absi(int(round(next.z - _target.z))))
 	_from = position
 	_target = next
 	_elapsed = 0.0
 	_duration = maxf(tick_seconds, 0.001)
+	_ensure_animation_controller()
+	if animation_controller != null:
+		animation_controller.movement_started(tile_distance)
 
 func _process(delta: float) -> void:
 	advance_interpolation(delta)
 
 func advance_interpolation(delta: float) -> void:
+	var was_moving := _elapsed < _duration
 	_elapsed = minf(_elapsed + delta, _duration)
 	position = _from.lerp(_target, _elapsed / _duration)
 	if is_inside_tree() and position.distance_squared_to(_target) > 0.0001:
 		look_at(Vector3(_target.x, position.y, _target.z), Vector3.UP)
+	if was_moving and _elapsed >= _duration and animation_controller != null:
+		animation_controller.movement_finished()
+
+func set_action(action: int) -> void:
+	_ensure_animation_controller()
+	if animation_controller != null:
+		animation_controller.set_action(action)
+
+func _ensure_animation_controller() -> void:
+	if animation_controller != null:
+		return
+	var player := get_node_or_null("AnimationPlayer") as AnimationPlayer
+	if player != null:
+		animation_controller = PlayerAnimationControllerScript.new(player)
 
 func _tile_position(x: int, z: int, at_plane: int) -> Vector3:
 	var centre_x := x + 0.5
 	var centre_z := z + 0.5
-	return Vector3(centre_x, TerrainHeight.sample(terrain_bundle, centre_x, centre_z, at_plane), centre_z)
+	return Vector3(centre_x, TerrainHeightScript.sample(terrain_bundle, centre_x, centre_z, at_plane), centre_z)

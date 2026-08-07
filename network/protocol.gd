@@ -7,6 +7,10 @@ const CONTENT_HELLO := 0x0002
 const MOVE_REQUEST := 0x0010
 const INTERACT := 0x0011
 const DROP_ITEM := 0x0012
+const INSPECT_WORLD := 0x0013
+const INSPECT_INVENTORY := 0x0014
+const USE_INVENTORY := 0x0015
+const USE_WORLD := 0x0016
 const CHAT := 0x0020
 const CONNECT_ACK := 0x0101
 const ENTITY_SPAWN := 0x0103
@@ -20,6 +24,7 @@ const SKILL := 0x0121
 const GROUND_ITEM := 0x0122
 const SYSTEM_MESSAGE := 0x0123
 const RESOURCE_STATE := 0x0124
+const PLAYER_ACTION := 0x0125
 
 static func encode_frame(id: int, payload: PackedByteArray) -> PackedByteArray:
 	if payload.size() > MAX_PAYLOAD:
@@ -65,6 +70,28 @@ static func encode_drop(slot: int, quantity: int, sequence: int) -> PackedByteAr
 	_put_u16(payload, quantity)
 	_put_u32(payload, sequence)
 	return encode_frame(DROP_ITEM, payload)
+
+static func encode_inspect_world(target: int) -> PackedByteArray:
+	if (target & 0x80000000) == 0:
+		return PackedByteArray()
+	var payload := PackedByteArray(); _put_u32(payload, target)
+	return encode_frame(INSPECT_WORLD, payload)
+
+static func encode_inspect_inventory(slot: int) -> PackedByteArray:
+	if slot < 0 or slot >= 30:
+		return PackedByteArray()
+	return encode_frame(INSPECT_INVENTORY, PackedByteArray([slot]))
+
+static func encode_use_inventory(source_slot: int, target_slot: int) -> PackedByteArray:
+	if source_slot < 0 or source_slot >= 30 or target_slot < 0 or target_slot >= 30:
+		return PackedByteArray()
+	return encode_frame(USE_INVENTORY, PackedByteArray([source_slot, target_slot]))
+
+static func encode_use_world(source_slot: int, target: int, sequence: int) -> PackedByteArray:
+	if source_slot < 0 or source_slot >= 30 or (target & 0x80000000) == 0:
+		return PackedByteArray()
+	var payload := PackedByteArray([source_slot]); _put_u32(payload, target); _put_u32(payload, sequence)
+	return encode_frame(USE_WORLD, payload)
 
 static func encode_chat(text: String) -> PackedByteArray:
 	var bytes := text.to_utf8_buffer()
@@ -118,6 +145,10 @@ static func decode_message(id: int, payload: PackedByteArray):
 			if payload.size() != 7:
 				return null
 			return {"entity": _u32(payload, 0), "state": payload[4], "remaining": _u16(payload, 5)}
+		PLAYER_ACTION:
+			if payload.size() != 5 or payload[4] > 1:
+				return null
+			return {"entity": _u32(payload, 0), "action": payload[4]}
 	return null
 
 static func _put_u16(bytes: PackedByteArray, value: int) -> void:
