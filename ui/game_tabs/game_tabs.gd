@@ -2,6 +2,9 @@ class_name GameTabs
 extends Control
 
 @onready var inventory: PanelContainer = $HSplitContainer/TabContainer/InventoryTab/InventoryPanel
+@onready var health_label: Label = $HSplitContainer/TabContainer/SkillsTab/SkillGrid/Health
+@onready var attack_label: Label = $HSplitContainer/TabContainer/SkillsTab/SkillGrid/Attack
+@onready var defence_label: Label = $HSplitContainer/TabContainer/SkillsTab/SkillGrid/Defence
 @onready var harvesting_label: Label = $HSplitContainer/TabContainer/SkillsTab/SkillGrid/Harvesting
 @onready var perception_label: Label = $HSplitContainer/TabContainer/SkillsTab/SkillGrid/Perception
 

@@ -10,6 +10,9 @@ var state = HUDStateScript.new()
 @onready var game_tabs: GameTabs = $GameTabs
 @onready var inventory: PanelContainer = game_tabs.inventory
 @onready var chatbox: PanelContainer = $Chatbox
+@onready var health_label: Label = game_tabs.health_label
+@onready var attack_label: Label = game_tabs.attack_label
+@onready var defence_label: Label = game_tabs.defence_label
 @onready var harvesting_label: Label = game_tabs.harvesting_label
 @onready var perception_label: Label = game_tabs.perception_label
 @onready var run_button: Button = $RunButton
@@ -64,6 +67,9 @@ func handle_message(id: int, message) -> void:
 			inventory.render_slots(state.slots)
 		Protocol.SKILL:
 			state.apply_skill(message.skill, message.xp)
+			health_label.text = "Health\nLevel %d  XP %d" % [state.health_level, state.health_xp]
+			attack_label.text = "Attack\nLevel %d  XP %d" % [state.attack_level, state.attack_xp]
+			defence_label.text = "Defence\nLevel %d  XP %d" % [state.defence_level, state.defence_xp]
 			harvesting_label.text = "Harvesting\nLevel %d  XP %d" % [state.harvesting_level, state.harvesting_xp]
 			perception_label.text = "Perception\nLevel %d  XP %d" % [state.perception_level, state.perception_xp]
 		Protocol.CHAT_MESSAGE:

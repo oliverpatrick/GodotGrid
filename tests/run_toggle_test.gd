@@ -13,7 +13,7 @@ static func run() -> bool:
 	var skill_grid: GridContainer = hud.get_node("GameTabs/HSplitContainer/TabContainer/SkillsTab/SkillGrid")
 	var inventory_tab: Control = hud.get_node("GameTabs/HSplitContainer/TabContainer/InventoryTab")
 	var skills_tab: Control = hud.get_node("GameTabs/HSplitContainer/TabContainer/SkillsTab")
-	if skill_grid.columns != 2 or skill_grid.get_child_count() != 2:
+	if skill_grid.columns != 3 or skill_grid.get_child_count() != 5:
 		root.free()
 		return false
 	if not inventory_tab.visible or skills_tab.visible:

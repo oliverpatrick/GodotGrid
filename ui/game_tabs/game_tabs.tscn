@@ -47,10 +47,34 @@ layout_mode = 2
 
 [node name="SkillGrid" type="GridContainer" parent="HSplitContainer/TabContainer/SkillsTab" unique_id=990874123]
 layout_mode = 2
-columns = 2
+columns = 3
+
+[node name="Health" type="Label" parent="HSplitContainer/TabContainer/SkillsTab/SkillGrid"]
+custom_minimum_size = Vector2(100, 56)
+layout_mode = 2
+text = "Health
+Level 1  XP 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Attack" type="Label" parent="HSplitContainer/TabContainer/SkillsTab/SkillGrid"]
+custom_minimum_size = Vector2(100, 56)
+layout_mode = 2
+text = "Attack
+Level 1  XP 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Defence" type="Label" parent="HSplitContainer/TabContainer/SkillsTab/SkillGrid"]
+custom_minimum_size = Vector2(100, 56)
+layout_mode = 2
+text = "Defence
+Level 1  XP 0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Harvesting" type="Label" parent="HSplitContainer/TabContainer/SkillsTab/SkillGrid" unique_id=126109576]
-custom_minimum_size = Vector2(154, 68)
+custom_minimum_size = Vector2(100, 56)
 layout_mode = 2
 text = "Harvesting
 Level 1  XP 0"
@@ -58,7 +82,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Perception" type="Label" parent="HSplitContainer/TabContainer/SkillsTab/SkillGrid" unique_id=1778862043]
-custom_minimum_size = Vector2(154, 68)
+custom_minimum_size = Vector2(100, 56)
 layout_mode = 2
 text = "Perception
 Level 1  XP 0"
