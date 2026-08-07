@@ -31,6 +31,10 @@ func handle_message(id: int, message) -> void:
 			var character = _character_for(message.entity)
 			if character != null:
 				character.confirm_tile(message.x, message.z, message.plane, tick_seconds)
+		Protocol.ENTITY_HEALTH:
+			var character = _character_for(message.entity)
+			if character != null:
+				character.set_health(message.hp, message.maximum)
 		Protocol.ENTITY_DESPAWN:
 			var character = _character_for(message.entity)
 			if character != null:

@@ -7,6 +7,7 @@ const Protocol = preload("res://network/protocol.gd")
 static func run() -> bool:
 	var bundle = ContentLoader.load_bundle(OS.get_environment("GAME_CONTENT_ROOT"))
 	var registry := PlayerRegistry.new()
+	Engine.get_main_loop().root.add_child(registry)
 	registry.configure(bundle, 42, 0.6)
 	registry.handle_message(Protocol.ENTITY_SPAWN, {"entity": 42, "type": 0, "x": 80, "z": 80, "plane": 0, "name": "Test", "definition_id": ""})
 	if not registry.players.has(42):
@@ -36,6 +37,21 @@ static func run() -> bool:
 		registry.free()
 		return false
 	if registry.npc_context_actions(npc_entity) != ["Talk-to", "Attack", "Inspect"] or registry.display_name_for(npc_entity) != "Man":
+		registry.free()
+		return false
+	registry.handle_message(Protocol.ENTITY_HEALTH, {"entity": 42, "hp": 7, "maximum": 10})
+	registry.handle_message(Protocol.ENTITY_HEALTH, {"entity": npc_entity, "hp": 3, "maximum": 8})
+	if not player.health_bar.visible or not is_equal_approx(player.health_bar.health_ratio(), 0.7) \
+		or not npc.health_bar.visible or not is_equal_approx(npc.health_bar.health_ratio(), 0.375):
+		registry.free()
+		return false
+	registry.handle_message(Protocol.ENTITY_HEALTH, {"entity": 42, "hp": 10, "maximum": 10})
+	if player.health_bar.visible:
+		registry.free()
+		return false
+	var npc_ratio: float = npc.health_bar.health_ratio()
+	registry.handle_message(Protocol.ENTITY_HEALTH, {"entity": 999, "hp": 1, "maximum": 10})
+	if player.health_bar.visible or not is_equal_approx(npc.health_bar.health_ratio(), npc_ratio):
 		registry.free()
 		return false
 	var npc_animations: AnimationPlayer = npc.get_node("AnimationPlayer")
