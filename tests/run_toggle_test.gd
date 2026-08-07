@@ -25,6 +25,16 @@ static func run() -> bool:
 		printerr("Skills tab did not replace the inventory tab")
 		root.free()
 		return false
+	hud.game_tabs.toggle_tab("skills")
+	if inventory_tab.visible or skills_tab.visible:
+		printerr("Selecting the active tab did not close it")
+		root.free()
+		return false
+	hud.game_tabs.toggle_tab("skills")
+	if inventory_tab.visible or not skills_tab.visible:
+		printerr("Closed skills tab did not reopen")
+		root.free()
+		return false
 	if button.text != "Run" or hud.is_run_enabled():
 		printerr("Run button has wrong initial state")
 		root.free()

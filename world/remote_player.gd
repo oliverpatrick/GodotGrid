@@ -77,6 +77,12 @@ func set_action(action: int) -> void:
 	if animation_controller != null:
 		animation_controller.set_action(action)
 
+func face_towards(target_position: Vector3) -> void:
+	var flat_target := Vector3(target_position.x, position.y, target_position.z)
+	if position.distance_squared_to(flat_target) <= 0.0001:
+		return
+	look_at_from_position(position, flat_target, Vector3.UP)
+
 func _ensure_animation_controller() -> void:
 	if animation_controller != null:
 		return

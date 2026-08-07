@@ -17534,7 +17534,7 @@ _data = {
 &"Walk_Formal": SubResource("Animation_s3m2v")
 }
 
-[node name="Human_Man" type="CharacterBody3D" unique_id=1039266272]
+[node name="Human_Man" type="CharacterBody3D" groups=["Interactable"] unique_id=1039266272]
 script = ExtResource("1_onk3h")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1629718461]

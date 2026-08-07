@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bx62eep8f68si" path="res://ui/player_hud/hud.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://ytwtm0jw084w" path="res://ui/chatbox/chatbox.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://5g251f7s00n5" path="res://ui/game_tabs/game_tabs.tscn" id="4_ot66e"]
+[ext_resource type="PackedScene" path="res://ui/dialogue_box/dialogue_box.tscn" id="5_dialogue"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_run_neutral"]
 bg_color = Color(0.18, 0.2, 0.24, 0.96)
@@ -23,6 +24,12 @@ visible = false
 script = ExtResource("1")
 
 [node name="Chatbox" parent="." unique_id=984604373 instance=ExtResource("3")]
+offset_left = 18.0
+offset_top = 500.0
+offset_right = 486.0
+offset_bottom = 702.0
+
+[node name="DialogueBox" parent="." instance=ExtResource("5_dialogue")]
 offset_left = 18.0
 offset_top = 500.0
 offset_right = 486.0

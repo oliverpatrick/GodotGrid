@@ -151,6 +151,13 @@ static func decode_message(id: int, payload: PackedByteArray):
 			if payload.size() != 9:
 				return null
 			return {"skill": payload[0], "xp": _u64(payload, 1)}
+		GROUND_ITEM:
+			if payload.size() != 8:
+				return null
+			var quantity := _u32(payload, 4)
+			if quantity == 0:
+				return null
+			return {"entity": _u32(payload, 0), "quantity": quantity}
 		SYSTEM_MESSAGE:
 			if payload.is_empty() or payload[0] > 160 or payload.size() != 1 + payload[0]:
 				return null

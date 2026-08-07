@@ -50,6 +50,13 @@ static func run() -> bool:
 	var dialogue = Protocol.decode_message(Protocol.DIALOGUE, dialogue_payload)
 	if dialogue != {"speaker": 0x8000002a, "text": "Hello there."}:
 		return false
+	var ground = Protocol.decode_message(Protocol.GROUND_ITEM, PackedByteArray([0x80, 0, 0, 42, 0, 0, 0, 5]))
+	if ground != {"entity": 0x8000002a, "quantity": 5}:
+		return false
+	if Protocol.decode_message(Protocol.GROUND_ITEM, PackedByteArray([0x80, 0, 0, 42, 0, 0, 5])) != null:
+		return false
+	if Protocol.decode_message(Protocol.GROUND_ITEM, PackedByteArray([0x80, 0, 0, 42, 0, 0, 0, 0])) != null:
+		return false
 	var malformed_dialogues := [
 		PackedByteArray([0, 0, 0, 42, 0]),
 		PackedByteArray([0, 0, 0, 42, 2, 65]),

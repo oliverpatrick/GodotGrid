@@ -10,6 +10,7 @@ var state = HUDStateScript.new()
 @onready var game_tabs: GameTabs = $GameTabs
 @onready var inventory: PanelContainer = game_tabs.inventory
 @onready var chatbox: PanelContainer = $Chatbox
+@onready var dialogue_box: PanelContainer = $DialogueBox
 @onready var health_label: Label = game_tabs.health_label
 @onready var attack_label: Label = game_tabs.attack_label
 @onready var defence_label: Label = game_tabs.defence_label
@@ -20,6 +21,7 @@ var state = HUDStateScript.new()
 func _ready() -> void:
 	run_button.toggled.connect(_on_run_button_toggled)
 	chatbox.nearby_submitted.connect(func(text: String): get_parent().get_node("InteractionController").send_nearby_chat(text))
+	dialogue_box.closed.connect(_on_dialogue_closed)
 	get_viewport().size_changed.connect(_apply_layout)
 	_apply_layout()
 
@@ -38,6 +40,7 @@ func _apply_layout() -> void:
 	var conversion := Vector2(logical_size.x / window_size.x, logical_size.y / window_size.y)
 	_apply_rect(run_button, _to_logical_rect(layout.run_rect, conversion))
 	_apply_rect(chatbox, _to_logical_rect(layout.chat_rect, conversion))
+	_apply_rect(dialogue_box, Rect2(chatbox.position, chatbox.size))
 
 func _to_logical_rect(rect: Rect2, conversion: Vector2) -> Rect2:
 	return Rect2(rect.position * conversion, rect.size * conversion)
@@ -82,3 +85,10 @@ func handle_message(id: int, message) -> void:
 func add_system_message(text: String) -> void:
 	state.add_message(text)
 	chatbox.add_message(text)
+
+func show_dialogue(speaker_name: String, text: String) -> void:
+	chatbox.hide()
+	dialogue_box.show_line(speaker_name, text)
+
+func _on_dialogue_closed() -> void:
+	chatbox.show()

@@ -104,9 +104,13 @@ func _on_world_connected(_entity: int) -> void:
 		login_screen.show_error("Unable to load world")
 
 func _on_world_message(id: int, message) -> void:
-	if stream == null or message == null:
+	if message == null:
 		return
-	if id == Protocol.REGION_LOAD:
+	if id == Protocol.DIALOGUE:
+		hud.show_dialogue(player_registry.display_name_for(message.speaker), message.text)
+	elif stream == null:
+		return
+	elif id == Protocol.REGION_LOAD:
 		stream.load_region("%d:%d:%d" % [message.x, message.z, message.plane])
 	elif id == Protocol.REGION_UNLOAD:
 		stream.unload_region("%d:%d:%d" % [message.x, message.z, message.plane])
@@ -121,6 +125,10 @@ func _on_entity_clicked(entity: int) -> void:
 	if use_targeting.active():
 		interaction_controller.use_world(use_targeting.take_source(), entity)
 		hud.inventory.set_selected_slot(-1)
+	elif player_registry.is_npc(entity):
+		var actions: Array = player_registry.npc_context_actions(entity)
+		if not actions.is_empty():
+			_execute_npc_action(str(actions[0]), entity)
 	else:
 		interaction_controller.interact(entity)
 
@@ -134,7 +142,13 @@ func _on_world_context_requested(entity: int, screen_position: Vector2) -> void:
 	_context_slot = -1
 	var kind: String = object_registry.kind_for(entity)
 	if not kind.is_empty():
-		context_menu.open(ContextActionsScript.world_actions(kind), screen_position)
+		var actions: Array = ContextActionsScript.ground_item_actions(object_registry.ground_items_at(entity)) if kind == "ground_item" else ContextActionsScript.world_actions(kind)
+		context_menu.open(actions, screen_position)
+	elif player_registry.is_npc(entity):
+		_context_kind = "npc"
+		var definition = player_registry.npc_definition(entity)
+		if definition != null:
+			context_menu.open(ContextActionsScript.npc_actions(definition), screen_position)
 
 func _on_inventory_context_requested(slot: int, screen_position: Vector2) -> void:
 	_context_kind = "inventory"
@@ -143,9 +157,14 @@ func _on_inventory_context_requested(slot: int, screen_position: Vector2) -> voi
 	context_menu.open(ContextActionsScript.inventory_actions(hud.inventory.item_droppable(slot)), screen_position)
 
 func _on_context_action(action_id: String) -> void:
+	if action_id.begins_with("ground.pickup:"):
+		interaction_controller.interact(action_id.trim_prefix("ground.pickup:").to_int())
+		return
 	match action_id:
 		"world.primary": interaction_controller.interact(_context_entity)
 		"world.inspect": interaction_controller.inspect_world(_context_entity)
+		"npc.talk": interaction_controller.interact(_context_entity, 0)
+		"npc.attack": interaction_controller.interact(_context_entity, 1)
 		"inventory.use":
 			use_targeting.select_source(_context_slot)
 			hud.inventory.set_selected_slot(_context_slot)
@@ -162,3 +181,9 @@ func _cancel_use() -> void:
 	use_targeting.cancel()
 	if is_instance_valid(hud) and is_instance_valid(hud.inventory):
 		hud.inventory.set_selected_slot(-1)
+
+func _execute_npc_action(action: String, entity: int) -> void:
+	match action:
+		"Talk-to": interaction_controller.interact(entity, 0)
+		"Attack": interaction_controller.interact(entity, 1)
+		"Inspect": interaction_controller.inspect_world(entity)

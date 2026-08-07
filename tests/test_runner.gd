@@ -27,6 +27,7 @@ func run_tests() -> void:
 		preload("res://tests/context_menu_test.gd"),
 		preload("res://tests/context_target_test.gd"),
 		preload("res://tests/hud_state_test.gd"),
+		preload("res://tests/dialogue_box_test.gd"),
 	]
 	for suite in suites:
 		if not suite.run():

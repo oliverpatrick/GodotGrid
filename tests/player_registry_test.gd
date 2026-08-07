@@ -30,9 +30,20 @@ static func run() -> bool:
 	var npc = registry.npcs[npc_entity]
 	if npc.scene_file_path != "res://assets/mobs/human/human_man.tscn" or npc.display_name != "Man" \
 		or npc.get_meta("entity_id", 0) != npc_entity or npc.get_meta("definition_id", "") != "npc.man" \
+		or npc.get_meta("npc_level", 0) != 2 or npc.get_meta("npc_actions", []) != ["Talk-to", "Attack", "Inspect"] \
+		or not npc.is_in_group("Interactable") \
 		or not is_equal_approx(npc.position.x, 85.5) or not is_equal_approx(npc.position.z, 85.5):
 		registry.free()
 		return false
+	if registry.npc_context_actions(npc_entity) != ["Talk-to", "Attack", "Inspect"] or registry.display_name_for(npc_entity) != "Man":
+		registry.free()
+		return false
+	var rotation_before: float = player.rotation.y
+	registry.face_entity(42, npc_entity)
+	if is_equal_approx(player.rotation.y, rotation_before):
+		registry.free()
+		return false
+	registry.face_entity(42, 0x8000ffff)
 	registry.handle_message(Protocol.ENTITY_MOVE, {"entity": npc_entity, "x": 86, "z": 85, "plane": 0})
 	npc.advance_interpolation(0.6)
 	if not is_equal_approx(npc.position.x, 86.5):
