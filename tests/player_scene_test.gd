@@ -66,6 +66,11 @@ static func run() -> bool:
 		printerr("harvest animation=%s" % animations.current_animation)
 		test_root.free()
 		return false
+	animations.advance(10.0)
+	if animations.current_animation != "Sword_Attack" or not animations.is_playing():
+		printerr("harvest did not loop: animation=%s playing=%s" % [animations.current_animation, animations.is_playing()])
+		test_root.free()
+		return false
 	player.confirm_tile(11, 10, 0, 0.6)
 	if animations.current_animation != "Walk":
 		printerr("harvest movement animation=%s" % animations.current_animation)
@@ -74,6 +79,56 @@ static func run() -> bool:
 	player.advance_interpolation(0.6)
 	if animations.current_animation != "Sword_Attack":
 		printerr("resumed animation=%s" % animations.current_animation)
+		test_root.free()
+		return false
+	player.set_action(2)
+	if animations.current_animation != "Punch_Cross":
+		printerr("cross animation=%s" % animations.current_animation)
+		test_root.free()
+		return false
+	animations.advance(0.25)
+	player.set_action(2)
+	if animations.current_animation != "Punch_Cross" or animations.current_animation_position > 0.01:
+		printerr("cross did not restart at zero: %s" % animations.current_animation_position)
+		test_root.free()
+		return false
+	animations.advance(1.1)
+	if animations.current_animation != "Idle":
+		printerr("cross completion animation=%s" % animations.current_animation)
+		test_root.free()
+		return false
+	player.set_action(3)
+	if animations.current_animation != "Punch_Jab":
+		printerr("jab animation=%s" % animations.current_animation)
+		test_root.free()
+		return false
+	animations.advance(0.25)
+	player.set_action(3)
+	if animations.current_animation != "Punch_Jab" or animations.current_animation_position > 0.01:
+		printerr("jab did not restart at zero: %s" % animations.current_animation_position)
+		test_root.free()
+		return false
+	animations.advance(1.0)
+	if animations.current_animation != "Idle":
+		printerr("jab completion animation=%s" % animations.current_animation)
+		test_root.free()
+		return false
+	player.set_action(4)
+	player.confirm_tile(20, 20, 0, 0.6)
+	player.set_action(2)
+	if animations.current_animation != "Death01":
+		printerr("death was interrupted by movement or cross: %s" % animations.current_animation)
+		test_root.free()
+		return false
+	animations.advance(2.5)
+	if animations.assigned_animation != "Death01" or animations.is_playing():
+		printerr("death did not hold its final pose: assigned=%s playing=%s" % [animations.assigned_animation, animations.is_playing()])
+		test_root.free()
+		return false
+	var death_pose := skeleton.get_bone_pose_rotation(bone)
+	animations.advance(0.1)
+	if not death_pose.is_equal_approx(skeleton.get_bone_pose_rotation(bone)):
+		printerr("death final pose changed after playback stopped")
 		test_root.free()
 		return false
 	player.set_action(0)

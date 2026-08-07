@@ -38,6 +38,46 @@ static func run() -> bool:
 	if registry.npc_context_actions(npc_entity) != ["Talk-to", "Attack", "Inspect"] or registry.display_name_for(npc_entity) != "Man":
 		registry.free()
 		return false
+	var npc_animations: AnimationPlayer = npc.get_node("AnimationPlayer")
+	registry.handle_message(Protocol.PLAYER_ACTION, {"entity": npc_entity, "action": 2})
+	if npc_animations.current_animation != "Punch_Cross":
+		registry.free()
+		return false
+	npc_animations.advance(0.25)
+	registry.handle_message(Protocol.PLAYER_ACTION, {"entity": npc_entity, "action": 2})
+	if npc_animations.current_animation != "Punch_Cross" or npc_animations.current_animation_position > 0.01:
+		registry.free()
+		return false
+	npc_animations.advance(1.1)
+	if npc_animations.current_animation != "Idle":
+		registry.free()
+		return false
+	registry.handle_message(Protocol.PLAYER_ACTION, {"entity": npc_entity, "action": 3})
+	if npc_animations.current_animation != "Punch_Jab":
+		registry.free()
+		return false
+	npc_animations.advance(0.25)
+	registry.handle_message(Protocol.PLAYER_ACTION, {"entity": npc_entity, "action": 3})
+	if npc_animations.current_animation != "Punch_Jab" or npc_animations.current_animation_position > 0.01:
+		registry.free()
+		return false
+	npc_animations.advance(1.0)
+	if npc_animations.current_animation != "Idle":
+		registry.free()
+		return false
+	registry.handle_message(Protocol.PLAYER_ACTION, {"entity": npc_entity, "action": 4})
+	registry.handle_message(Protocol.PLAYER_ACTION, {"entity": npc_entity, "action": 2})
+	if npc_animations.current_animation != "Death01":
+		registry.free()
+		return false
+	npc_animations.advance(2.5)
+	if npc_animations.assigned_animation != "Death01" or npc_animations.is_playing():
+		registry.free()
+		return false
+	registry.handle_message(Protocol.PLAYER_ACTION, {"entity": npc_entity, "action": 0})
+	if npc_animations.current_animation != "Idle":
+		registry.free()
+		return false
 	var rotation_before: float = player.rotation.y
 	registry.face_entity(42, npc_entity)
 	if is_equal_approx(player.rotation.y, rotation_before):
