@@ -3,6 +3,7 @@ extends Node3D
 
 const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
 const PLAYER_SCENE = preload("uid://tvjj76iceovt") # assets/player/player.tscn
+const NPC_HUMAN_MAN_SCENE = preload("uid://dmfqsfcnawdue") # assets/mobs/human/human_man.tscn
 
 signal local_player_ready(player: Node3D)
 
@@ -62,7 +63,7 @@ func _spawn_npc(message: Dictionary) -> void:
 	if definition == null or str(definition.get("presentation", {}).get("model_id", "")) != "model.player":
 		push_error("Unknown or unsupported NPC definition: %s" % message.get("definition_id", ""))
 		return
-	var npc: Node3D = PLAYER_SCENE.instantiate()
+	var npc: Node3D = NPC_HUMAN_MAN_SCENE.instantiate()
 	npc.name = "NPC_%d" % entity
 	npc.configure(entity, str(definition.get("name", "")), bundle)
 	npc.set_meta("entity_id", entity)

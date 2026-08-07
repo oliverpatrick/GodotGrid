@@ -28,7 +28,7 @@ static func run() -> bool:
 		registry.free()
 		return false
 	var npc = registry.npcs[npc_entity]
-	if npc.scene_file_path != "res://assets/player/player.tscn" or npc.display_name != "Man" \
+	if npc.scene_file_path != "res://assets/mobs/human/human_man.tscn" or npc.display_name != "Man" \
 		or npc.get_meta("entity_id", 0) != npc_entity or npc.get_meta("definition_id", "") != "npc.man" \
 		or not is_equal_approx(npc.position.x, 85.5) or not is_equal_approx(npc.position.z, 85.5):
 		registry.free()
