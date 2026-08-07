@@ -64,7 +64,9 @@ func refresh() -> void:
 func _play_once(animation_name: String) -> void:
 	if not animation_player.has_animation(animation_name):
 		push_warning("Missing player animation: %s" % animation_name)
-		if animation_name != DEATH_ANIMATION and animation_player.has_animation(IDLE_ANIMATION):
+		if animation_name == DEATH_ANIMATION:
+			animation_player.pause()
+		elif animation_player.has_animation(IDLE_ANIMATION):
 			animation_player.play(IDLE_ANIMATION)
 		return
 	animation_player.stop()

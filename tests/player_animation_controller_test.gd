@@ -71,16 +71,27 @@ static func _missing_death_keeps_current_pose() -> bool:
 	var animations: AnimationPlayer = fixture.animations
 	var controller: PlayerAnimationController = fixture.controller
 	controller.movement_started(1)
+	animations.advance(0.2)
+	var pose_before: Vector2 = fixture.pose_target.position
 	controller.set_action(4)
-	var ok := animations.current_animation == "Walk"
+	var ok: bool = animations.assigned_animation == "Walk" and not animations.is_playing() \
+		and fixture.pose_target.position.is_equal_approx(pose_before)
 	if not ok:
-		printerr("missing death changed current pose to %s" % animations.current_animation)
+		printerr("missing death fallback assigned=%s playing=%s pose=%s before=%s" % [
+			animations.assigned_animation,
+			animations.is_playing(),
+			fixture.pose_target.position,
+			pose_before,
+		])
 	fixture.root.free()
 	return ok
 
 
 static func _new_fixture(omitted: Array[String] = []) -> Dictionary:
 	var root := Node.new()
+	var pose_target := Node2D.new()
+	pose_target.name = "PoseTarget"
+	root.add_child(pose_target)
 	var animations := AnimationPlayer.new()
 	var library := AnimationLibrary.new()
 	for animation_name in ["Idle", "Walk", "Jog_Fwd", "Sword_Attack", "Punch_Cross", "Punch_Jab", "Death01"]:
@@ -88,12 +99,19 @@ static func _new_fixture(omitted: Array[String] = []) -> Dictionary:
 			continue
 		var animation := Animation.new()
 		animation.length = 0.5
+		if animation_name == "Walk":
+			animation.loop_mode = Animation.LOOP_LINEAR
+			var pose_track := animation.add_track(Animation.TYPE_VALUE)
+			animation.track_set_path(pose_track, NodePath("PoseTarget:position"))
+			animation.track_insert_key(pose_track, 0.0, Vector2.ZERO)
+			animation.track_insert_key(pose_track, 0.5, Vector2(10.0, 0.0))
 		library.add_animation(animation_name, animation)
 	animations.add_animation_library("", library)
 	root.add_child(animations)
 	Engine.get_main_loop().root.add_child(root)
 	return {
 		"root": root,
+		"pose_target": pose_target,
 		"animations": animations,
 		"controller": PlayerAnimationController.new(animations),
 	}
