@@ -1,8 +1,16 @@
-[gd_scene load_steps=7 format=3 uid="uid://yaiwisaay14y"]
+[gd_scene load_steps=15 format=3 uid="uid://yaiwisaay14y"]
 
-[ext_resource type="Script" uid="uid://cnkojmcv7afbe" path="res://terrain_generator.gd" id="1_wc7r7"]
-[ext_resource type="PackedScene" uid="uid://b5sbv81foeoy2" path="res://tree.tscn" id="2_vg2ls"]
-[ext_resource type="PackedScene" uid="uid://tvjj76iceovt" path="res://player.tscn" id="2_y7rda"]
+[ext_resource type="Script" path="res://game_app.gd" id="1_wc7r7"]
+[ext_resource type="Script" path="res://network/auth_client.gd" id="2_auth"]
+[ext_resource type="Script" path="res://network/network_client.gd" id="3_network"]
+[ext_resource type="PackedScene" path="res://ui/login_screen.tscn" id="4_login"]
+[ext_resource type="Script" path="res://world/player_registry.gd" id="5_registry"]
+[ext_resource type="Script" path="res://world/click_to_move.gd" id="6_click"]
+[ext_resource type="Script" path="res://camera_controller.gd" id="7_camera"]
+[ext_resource type="Script" path="res://world/object_registry.gd" id="8_objects"]
+[ext_resource type="Script" path="res://gameplay/interaction_controller.gd" id="9_interaction"]
+[ext_resource type="PackedScene" path="res://ui/hud.tscn" id="10_hud"]
+[ext_resource type="Script" path="res://gameplay/selection_feedback.gd" id="11_selection"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wc7r7"]
 sky_top_color = Color(0.357247, 0.524792, 0.750752, 1)
@@ -20,7 +28,6 @@ glow_enabled = true
 
 [node name="TerrainGenerator" type="Node3D"]
 script = ExtResource("1_wc7r7")
-tree_scene = ExtResource("2_vg2ls")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_y7rda")
@@ -28,4 +35,30 @@ environment = SubResource("Environment_y7rda")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 shadow_enabled = true
 
-[node name="Player" parent="." instance=ExtResource("2_y7rda")]
+[node name="AuthClient" type="Node" parent="."]
+script = ExtResource("2_auth")
+
+[node name="NetworkClient" type="Node" parent="."]
+script = ExtResource("3_network")
+
+[node name="LoginScreen" parent="." instance=ExtResource("4_login")]
+
+[node name="PlayerRegistry" type="Node3D" parent="."]
+script = ExtResource("5_registry")
+
+[node name="ClickToMove" type="Node" parent="."]
+script = ExtResource("6_click")
+
+[node name="FollowCamera" type="Camera3D" parent="."]
+script = ExtResource("7_camera")
+
+[node name="ObjectRegistry" type="Node3D" parent="."]
+script = ExtResource("8_objects")
+
+[node name="InteractionController" type="Node" parent="."]
+script = ExtResource("9_interaction")
+
+[node name="SelectionFeedback" type="Node3D" parent="."]
+script = ExtResource("11_selection")
+
+[node name="HUD" parent="." instance=ExtResource("10_hud")]

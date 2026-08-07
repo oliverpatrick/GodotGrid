@@ -1,0 +1,23 @@
+extends RefCounted
+
+const HUDState = preload("res://ui/hud_state.gd")
+const InteractionController = preload("res://gameplay/interaction_controller.gd")
+
+static func run() -> bool:
+	var state = HUDState.new()
+	state.apply_inventory([{"slot": 1, "item": 1, "quantity": 1}, {"slot": 2, "item": 1, "quantity": 1}])
+	if state.slots.size() != 30 or state.slots[1].quantity != 1 or state.slots[2].quantity != 1:
+		return false
+	state.apply_skill(0, 30)
+	if state.harvesting_xp != 30 or state.harvesting_level != 1:
+		return false
+	state.apply_resource(0x8000002a, 2)
+	if state.resources[0x8000002a] != 2:
+		return false
+	state.add_message("inventory is full")
+	if state.messages[-1] != "inventory is full":
+		return false
+	var controller: Node = InteractionController.new()
+	var frame: PackedByteArray = controller.build_drop_request(3)
+	controller.free()
+	return frame.hex_encode() == "0012000703000100000001"
