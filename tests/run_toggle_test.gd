@@ -10,8 +10,19 @@ static func run() -> bool:
 	Engine.get_main_loop().root.add_child(root)
 	root.add_child(hud)
 	var button: Button = hud.get_node("RunButton")
-	var skill_grid: GridContainer = hud.get_node("SkillPanel/SkillGrid")
+	var skill_grid: GridContainer = hud.get_node("GameTabs/HSplitContainer/TabContainer/SkillsTab/SkillGrid")
+	var inventory_tab: Control = hud.get_node("GameTabs/HSplitContainer/TabContainer/InventoryTab")
+	var skills_tab: Control = hud.get_node("GameTabs/HSplitContainer/TabContainer/SkillsTab")
 	if skill_grid.columns != 2 or skill_grid.get_child_count() != 2:
+		root.free()
+		return false
+	if not inventory_tab.visible or skills_tab.visible:
+		printerr("Inventory tab is not selected initially")
+		root.free()
+		return false
+	hud.game_tabs.select_tab("skills")
+	if inventory_tab.visible or not skills_tab.visible:
+		printerr("Skills tab did not replace the inventory tab")
 		root.free()
 		return false
 	if button.text != "Run" or hud.is_run_enabled():

@@ -7,10 +7,11 @@ const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
 const HUDStateScript = preload("uid://donlsyshgyxjl") # ui/player_hud/hud_state.gd
 const UIScaleScript = preload("uid://dns5qsqqg8yeg") # ui/ui_scale.gd
 var state = HUDStateScript.new()
-@onready var inventory: PanelContainer = $InventoryPanel
+@onready var game_tabs: GameTabs = $GameTabs
+@onready var inventory: PanelContainer = game_tabs.inventory
 @onready var chatbox: PanelContainer = $Chatbox
-@onready var harvesting_label: Label = $SkillPanel/SkillGrid/Harvesting
-@onready var perception_label: Label = $SkillPanel/SkillGrid/Perception
+@onready var harvesting_label: Label = game_tabs.harvesting_label
+@onready var perception_label: Label = game_tabs.perception_label
 @onready var run_button: Button = $RunButton
 
 func _ready() -> void:
@@ -32,9 +33,7 @@ func _apply_layout() -> void:
 		safe = Rect2i(Vector2i.ZERO, window_size)
 	var layout := UIScaleScript.safe_layout(window_size, safe, UIScaleScript.parse_override(OS.get_environment("UI_SCALE")))
 	var conversion := Vector2(logical_size.x / window_size.x, logical_size.y / window_size.y)
-	_apply_rect($SkillPanel, _to_logical_rect(layout.skill_rect, conversion))
 	_apply_rect(run_button, _to_logical_rect(layout.run_rect, conversion))
-	_apply_rect(inventory, _to_logical_rect(layout.inventory_rect, conversion))
 	_apply_rect(chatbox, _to_logical_rect(layout.chat_rect, conversion))
 
 func _to_logical_rect(rect: Rect2, conversion: Vector2) -> Rect2:

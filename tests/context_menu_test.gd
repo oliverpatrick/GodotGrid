@@ -13,12 +13,18 @@ static func run() -> bool:
 	var selected: Array[String] = []
 	menu.action_selected.connect(func(action_id: String): selected.append(action_id))
 	menu.open([ContextAction.create("Inspect", "world.inspect"), ContextAction.create("Close", "context.close")], Vector2(100000, 100000))
-	var viewport: Rect2 = menu.get_viewport().get_visible_rect()
+	var viewport: Rect2 = Engine.get_main_loop().root.get_visible_rect()
 	if not viewport.encloses(Rect2(menu.position, menu.size)):
 		menu.free()
 		return false
 	menu.select_action("world.inspect")
 	var ok: bool = selected == ["world.inspect"] and not menu.visible
+	menu.open([ContextAction.create("Inspect", "world.inspect")], Vector2(20, 20))
+	var secondary_click := InputEventMouseButton.new()
+	secondary_click.button_index = MOUSE_BUTTON_RIGHT
+	secondary_click.pressed = true
+	menu._on_window_input(secondary_click)
+	ok = ok and not menu.visible
 	menu.free()
 	return ok
 
