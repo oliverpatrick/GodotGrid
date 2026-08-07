@@ -9,7 +9,7 @@ static func run() -> bool:
 	var bundle = ContentLoader.load_bundle(OS.get_environment("GAME_CONTENT_ROOT"))
 	var registry := ObjectRegistry.new()
 	registry.configure(bundle)
-	registry.handle_message(Protocol.ENTITY_SPAWN, {"entity": 42, "type": 3, "x": 84, "z": 80, "plane": 0, "name": "tree.1"})
+	registry.handle_message(Protocol.ENTITY_SPAWN, {"entity": 42, "type": 3, "x": 84, "z": 80, "plane": 0, "name": "object.1", "definition_id": "resource.mutated_tree"})
 	if not registry.objects.has(42):
 		registry.free()
 		return false

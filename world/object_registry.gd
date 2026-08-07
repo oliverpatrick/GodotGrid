@@ -35,10 +35,12 @@ func handle_message(id: int, message) -> void:
 func _spawn_object(message: Dictionary) -> void:
 	if objects.has(message.entity):
 		return
-	var is_tree := str(message.name).begins_with("tree.")
+	var definition_id := str(message.get("definition_id", ""))
+	var is_tree := definition_id == "resource.mutated_tree"
 	var body: StaticBody3D = TreeScene.instantiate() if is_tree else StaticBody3D.new()
 	body.name = "Object_%d" % message.entity
 	body.set_meta("entity_id", message.entity)
+	body.set_meta("definition_id", definition_id)
 	body.set_meta("context_kind", "resource" if is_tree else "ground_item")
 	if not body.is_in_group("Interactable"):
 		body.add_to_group("Interactable")
@@ -50,7 +52,7 @@ func _spawn_object(message: Dictionary) -> void:
 	var collision := CollisionShape3D.new()
 	var material := StandardMaterial3D.new()
 	material.roughness = 0.86
-	if "axe" in str(message.name):
+	if definition_id == "item.basic_axe":
 		mesh_instance.mesh = BoxMesh.new()
 		mesh_instance.scale = Vector3(0.18, 0.7, 0.12)
 		mesh_instance.position.y = 0.35

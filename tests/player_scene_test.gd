@@ -22,7 +22,7 @@ static func run() -> bool:
 		printerr("mannequin has no weighted bone data")
 		player.free()
 		return false
-	for animation in [&"Idle", &"Walk", &"Jog_Fwd", &"Sword_Attack"]:
+	for animation in [&"Idle", &"Walk", &"Jog_Fwd", &"Sword_Attack", &"Punch_Jab", &"Punch_Cross", &"Death01"]:
 		if not animations.has_animation(animation):
 			printerr("missing animation: %s; available=%s" % [animation, animations.get_animation_list()])
 			player.free()
