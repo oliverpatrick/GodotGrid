@@ -18,6 +18,7 @@ func run_tests() -> void:
 		preload("res://tests/auth_client_test.gd"),
 		preload("res://tests/movement_view_test.gd"),
 		preload("res://tests/world_command_sequence_test.gd"),
+		preload("res://tests/player_animation_controller_test.gd"),
 		preload("res://tests/player_scene_test.gd"),
 		preload("res://tests/health_bar_test.gd"),
 		preload("res://tests/player_registry_test.gd"),

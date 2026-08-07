@@ -20,9 +20,8 @@ func _init(player: AnimationPlayer) -> void:
 	if harvest != null:
 		harvest.loop_mode = Animation.LOOP_LINEAR
 	for animation_name in [PUNCH_CROSS_ANIMATION, PUNCH_JAB_ANIMATION, DEATH_ANIMATION]:
-		var animation := animation_player.get_animation(animation_name)
-		if animation != null:
-			animation.loop_mode = Animation.LOOP_NONE
+		if animation_player.has_animation(animation_name):
+			animation_player.get_animation(animation_name).loop_mode = Animation.LOOP_NONE
 	if not animation_player.animation_finished.is_connected(_on_animation_finished):
 		animation_player.animation_finished.connect(_on_animation_finished)
 	refresh()
@@ -53,7 +52,7 @@ func movement_finished() -> void:
 	refresh()
 
 func refresh() -> void:
-	if action == 4:
+	if action == 4 or _punch_is_playing():
 		return
 	var wanted := movement_animation if moving else (HARVEST_ANIMATION if action == 1 else IDLE_ANIMATION)
 	if not animation_player.has_animation(wanted):
@@ -65,9 +64,14 @@ func refresh() -> void:
 func _play_once(animation_name: String) -> void:
 	if not animation_player.has_animation(animation_name):
 		push_warning("Missing player animation: %s" % animation_name)
+		if animation_name != DEATH_ANIMATION and animation_player.has_animation(IDLE_ANIMATION):
+			animation_player.play(IDLE_ANIMATION)
 		return
 	animation_player.stop()
 	animation_player.play(animation_name)
+
+func _punch_is_playing() -> bool:
+	return animation_player.is_playing() and animation_player.current_animation in [PUNCH_CROSS_ANIMATION, PUNCH_JAB_ANIMATION]
 
 func _on_animation_finished(animation_name: StringName) -> void:
 	if animation_name == PUNCH_CROSS_ANIMATION or animation_name == PUNCH_JAB_ANIMATION:
