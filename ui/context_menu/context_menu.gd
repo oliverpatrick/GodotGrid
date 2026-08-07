@@ -18,48 +18,17 @@ func open(actions: Array, screen_position: Vector2) -> void:
 	_clear_submenus()
 	_actions.clear()
 	_next_id = 1
-
 	_add_actions(self, actions)
-
 	reset_size()
-	# popup(popup_rect_for(screen_position, Rect2i(get_viewport().get_visible_rect()), size))
 	var viewport_rect := Rect2i(get_tree().root.get_visible_rect())
-	var rect := popup_rect_for(screen_position, viewport_rect, size)
-
-	popup(rect)
-
+	popup(popup_rect_for(screen_position, viewport_rect, size))
 
 func popup_rect_for(screen_position: Vector2, viewport_rect: Rect2i, popup_size: Vector2i) -> Rect2i:
-	# var wanted := Vector2i(screen_position)
-	# var furthest_x := maxi(viewport_rect.position.x, viewport_rect.end.x - popup_size.x)
-	# var furthest_y := maxi(viewport_rect.position.y, viewport_rect.end.y - popup_size.y)
-	# wanted.x = clampi(wanted.x, viewport_rect.position.x, furthest_x)
-	# wanted.y = clampi(wanted.y, viewport_rect.position.y, furthest_y)
-	# return Rect2i(wanted, popup_size)
 	var wanted := Vector2i(screen_position)
-
-	var furthest_x := maxi(
-		viewport_rect.position.x,
-		viewport_rect.end.x - popup_size.x
-	)
-
-	var furthest_y := maxi(
-		viewport_rect.position.y,
-		viewport_rect.end.y - popup_size.y
-	)
-
-	wanted.x = clampi(
-		wanted.x,
-		viewport_rect.position.x,
-		furthest_x
-	)
-
-	wanted.y = clampi(
-		wanted.y,
-		viewport_rect.position.y,
-		furthest_y
-	)
-
+	var furthest_x := maxi(viewport_rect.position.x, viewport_rect.end.x - popup_size.x)
+	var furthest_y := maxi(viewport_rect.position.y, viewport_rect.end.y - popup_size.y)
+	wanted.x = clampi(wanted.x, viewport_rect.position.x, furthest_x)
+	wanted.y = clampi(wanted.y, viewport_rect.position.y, furthest_y)
 	return Rect2i(wanted, popup_size)
 
 func select_action(action_id: String) -> void:
@@ -74,17 +43,14 @@ func _add_actions(menu: PopupMenu, actions: Array) -> void:
 		if action.children.is_empty():
 			var item_id := _next_id
 			_next_id += 1
-
 			menu.add_item(action.label, item_id)
 			_actions[item_id] = action.action_id
 		else:
 			var submenu := PopupMenu.new()
 			submenu.name = "Submenu_%d" % _next_id
 			submenu.id_pressed.connect(_on_id_pressed)
-
 			menu.add_child(submenu)
 			_add_actions(submenu, action.children)
-
 			menu.add_submenu_item(action.label, submenu.name)
 
 func _on_id_pressed(item_id: int) -> void:
