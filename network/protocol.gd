@@ -112,9 +112,13 @@ static func decode_message(id: int, payload: PackedByteArray):
 				return null
 			return {"x": _s16(payload, 0), "z": _s16(payload, 2), "plane": payload[4]}
 		ENTITY_SPAWN:
-			if payload.size() < 15 or payload[13] > 3 or payload.size() != 15 + payload[14]:
+			if payload.size() < 16 or payload[13] > 3:
 				return null
-			return {"entity": _u32(payload, 0), "type": payload[4], "x": _s32(payload, 5), "z": _s32(payload, 9), "plane": payload[13], "name": payload.slice(15).get_string_from_utf8()}
+			var name_end := 16 + payload[14]
+			var definition_end := name_end + payload[15]
+			if definition_end != payload.size():
+				return null
+			return {"entity": _u32(payload, 0), "type": payload[4], "x": _s32(payload, 5), "z": _s32(payload, 9), "plane": payload[13], "name": payload.slice(16, name_end).get_string_from_utf8(), "definition_id": payload.slice(name_end, definition_end).get_string_from_utf8()}
 		ENTITY_MOVE:
 			if payload.size() != 13 or payload[12] > 3:
 				return null

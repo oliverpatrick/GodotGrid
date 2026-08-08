@@ -7,6 +7,7 @@ const PLAYER_SCENE = preload("uid://tvjj76iceovt") # assets/player/player.tscn
 signal local_player_ready(player: Node3D)
 
 var players: Dictionary = {}
+var npcs: Dictionary = {}
 var local_index := -1
 var bundle
 var tick_seconds := 0.6
@@ -23,13 +24,18 @@ func handle_message(id: int, message) -> void:
 		Protocol.ENTITY_SPAWN:
 			if message.type == 0:
 				_spawn_player(message)
+			elif message.type == 1:
+				_spawn_npc(message)
 		Protocol.ENTITY_MOVE:
-			if players.has(message.entity):
-				players[message.entity].confirm_tile(message.x, message.z, message.plane, tick_seconds)
+			var character = _character_for(message.entity)
+			if character != null:
+				character.confirm_tile(message.x, message.z, message.plane, tick_seconds)
 		Protocol.ENTITY_DESPAWN:
-			if players.has(message.entity):
-				players[message.entity].queue_free()
+			var character = _character_for(message.entity)
+			if character != null:
+				character.queue_free()
 				players.erase(message.entity)
+				npcs.erase(message.entity)
 		Protocol.PLAYER_ACTION:
 			apply_action(message.entity, message.action)
 
@@ -47,6 +53,29 @@ func _spawn_player(message: Dictionary) -> void:
 	if index == local_index:
 		local_player_ready.emit(player)
 
+func _spawn_npc(message: Dictionary) -> void:
+	var entity: int = message.entity
+	if npcs.has(entity):
+		npcs[entity].snap_to_tile(message.x, message.z, message.plane)
+		return
+	var definition = bundle.npc_by_id(str(message.get("definition_id", "")))
+	if definition == null or str(definition.get("presentation", {}).get("model_id", "")) != "model.player":
+		push_error("Unknown or unsupported NPC definition: %s" % message.get("definition_id", ""))
+		return
+	var npc: Node3D = PLAYER_SCENE.instantiate()
+	npc.name = "NPC_%d" % entity
+	npc.configure(entity, str(definition.get("name", "")), bundle)
+	npc.set_meta("entity_id", entity)
+	npc.set_meta("definition_id", str(definition.id))
+	npc.set_meta("context_kind", "npc")
+	npc.snap_to_tile(message.x, message.z, message.plane)
+	add_child(npc)
+	npcs[entity] = npc
+
 func apply_action(entity: int, action: int) -> void:
-	if players.has(entity):
-		players[entity].set_action(action)
+	var character = _character_for(entity)
+	if character != null:
+		character.set_action(action)
+
+func _character_for(entity: int):
+	return players.get(entity, npcs.get(entity))
