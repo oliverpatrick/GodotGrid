@@ -2,6 +2,12 @@ class_name HUDState
 extends RefCounted
 
 var slots: Array = []
+var health_xp := 0
+var health_level := 1
+var attack_xp := 0
+var attack_level := 1
+var defence_xp := 0
+var defence_level := 1
 var harvesting_xp := 0
 var harvesting_level := 1
 var perception_xp := 0
@@ -24,9 +30,18 @@ func apply_inventory(incoming: Array) -> void:
 
 func apply_skill(skill: int, xp: int) -> void:
 	if skill == 0:
+		health_xp = xp
+		health_level = level_for_xp(xp)
+	elif skill == 1:
+		attack_xp = xp
+		attack_level = level_for_xp(xp)
+	elif skill == 2:
+		defence_xp = xp
+		defence_level = level_for_xp(xp)
+	elif skill == 3:
 		harvesting_xp = xp
 		harvesting_level = level_for_xp(xp)
-	elif skill == 1:
+	elif skill == 4:
 		perception_xp = xp
 		perception_level = level_for_xp(xp)
 

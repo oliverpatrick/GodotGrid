@@ -3,6 +3,7 @@ extends Node3D
 
 const TerrainHeightScript = preload("uid://ctl1kxhgld3tn") # world/terrain_height.gd
 const PlayerAnimationControllerScript = preload("uid://ch55e8gtqv5nx") # world/player_animation_controller.gd
+const HealthBar3DScript = preload("res://world/health_bar_3d.gd")
 
 var player_index := -1
 var display_name := ""
@@ -13,6 +14,7 @@ var _target := Vector3.ZERO
 var _elapsed := 0.0
 var _duration := 0.6
 var animation_controller
+var health_bar
 
 func _ready() -> void:
 	if get_child_count() == 0:
@@ -27,6 +29,9 @@ func _ready() -> void:
 		material.roughness = 0.8
 		body.material_override = material
 		add_child(body)
+	health_bar = HealthBar3DScript.new()
+	health_bar.name = "HealthBar3D"
+	add_child(health_bar)
 
 func configure(index: int, player_name: String, bundle) -> void:
 	player_index = index
@@ -76,6 +81,15 @@ func set_action(action: int) -> void:
 	_ensure_animation_controller()
 	if animation_controller != null:
 		animation_controller.set_action(action)
+
+func set_health(hp: int, maximum: int) -> void:
+	health_bar.set_health(hp, maximum)
+
+func face_towards(target_position: Vector3) -> void:
+	var flat_target := Vector3(target_position.x, position.y, target_position.z)
+	if position.distance_squared_to(flat_target) <= 0.0001:
+		return
+	look_at_from_position(position, flat_target, Vector3.UP)
 
 func _ensure_animation_controller() -> void:
 	if animation_controller != null:

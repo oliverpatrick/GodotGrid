@@ -18,15 +18,19 @@ func run_tests() -> void:
 		preload("res://tests/auth_client_test.gd"),
 		preload("res://tests/movement_view_test.gd"),
 		preload("res://tests/world_command_sequence_test.gd"),
+		preload("res://tests/player_animation_controller_test.gd"),
 		preload("res://tests/player_scene_test.gd"),
+		preload("res://tests/health_bar_test.gd"),
 		preload("res://tests/player_registry_test.gd"),
 		preload("res://tests/selection_feedback_test.gd"),
 		preload("res://tests/tree_presentation_test.gd"),
 		preload("res://tests/ui_scale_test.gd"),
 		preload("res://tests/run_toggle_test.gd"),
+		preload("res://tests/combat_style_test.gd"),
 		preload("res://tests/context_menu_test.gd"),
 		preload("res://tests/context_target_test.gd"),
 		preload("res://tests/hud_state_test.gd"),
+		preload("res://tests/dialogue_box_test.gd"),
 	]
 	for suite in suites:
 		if not suite.run():

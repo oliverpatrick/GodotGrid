@@ -9,14 +9,17 @@ static func run() -> bool:
 	state.apply_inventory([{"slot": 1, "item": 1, "quantity": 1}, {"slot": 2, "item": 1, "quantity": 1}])
 	if state.slots.size() != 30 or state.slots[1].quantity != 1 or state.slots[2].quantity != 1:
 		return false
-	state.apply_skill(0, 30)
-	if state.harvesting_xp != 30 or state.harvesting_level != 1:
+	state.apply_skill(0, 0)
+	if state.health_xp != 0 or state.health_level != 1:
 		return false
 	state.apply_skill(1, 20)
-	if state.perception_xp != 20 or state.perception_level != 1:
+	state.apply_skill(2, 30)
+	state.apply_skill(3, 40)
+	state.apply_skill(4, 50)
+	if state.attack_xp != 20 or state.defence_xp != 30 or state.harvesting_xp != 40 or state.perception_xp != 50:
 		return false
 	state.apply_skill(99, 999)
-	if state.perception_xp != 20 or state.harvesting_xp != 30:
+	if state.perception_xp != 50 or state.health_xp != 0:
 		return false
 	state.apply_resource(0x8000002a, 2)
 	if state.resources[0x8000002a] != 2:

@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/dialogue_box/dialogue_box.gd" id="1_dialogue"]
+
+[node name="DialogueBox" type="PanelContainer"]
+visible = false
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -202.0
+offset_right = 468.0
+grow_vertical = 0
+script = ExtResource("1_dialogue")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Speaker" type="Label" parent="Layout"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Speaker"
+
+[node name="Line" type="Label" parent="Layout"]
+custom_minimum_size = Vector2(0, 104)
+layout_mode = 2
+size_flags_vertical = 3
+text = "Dialogue"
+autowrap_mode = 2
+
+[node name="Close" type="Button" parent="Layout"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "Close"

@@ -5,6 +5,7 @@ const Protocol = preload("uid://bvppiqbq80y0l") # network/protocol.gd
 const TerrainHeightScript = preload("uid://ctl1kxhgld3tn") # world/terrain_height.gd
 const TreeScene = preload("uid://b5sbv81foeoy2") # assets/world/mutated_tree.tscn
 var objects: Dictionary = {}
+var pending_quantities: Dictionary = {}
 var bundle
 
 func configure(content_bundle) -> void:
@@ -25,9 +26,15 @@ func handle_message(id: int, message) -> void:
 			if message.type == 3:
 				_spawn_object(message)
 		Protocol.ENTITY_DESPAWN:
+			pending_quantities.erase(message.entity)
 			if objects.has(message.entity):
 				objects[message.entity].queue_free()
 				objects.erase(message.entity)
+		Protocol.GROUND_ITEM:
+			if objects.has(message.entity):
+				objects[message.entity].set_meta("quantity", message.quantity)
+			else:
+				pending_quantities[message.entity] = message.quantity
 		Protocol.RESOURCE_STATE:
 			if objects.has(message.entity):
 				_set_resource_state(objects[message.entity], message.state)
@@ -42,6 +49,12 @@ func _spawn_object(message: Dictionary) -> void:
 	body.set_meta("entity_id", message.entity)
 	body.set_meta("definition_id", definition_id)
 	body.set_meta("context_kind", "resource" if is_tree else "ground_item")
+	body.set_meta("tile_x", int(message.x))
+	body.set_meta("tile_z", int(message.z))
+	body.set_meta("plane", int(message.plane))
+	if not is_tree:
+		body.set_meta("quantity", pending_quantities.get(message.entity, 1))
+		pending_quantities.erase(message.entity)
 	if not body.is_in_group("Interactable"):
 		body.add_to_group("Interactable")
 	if is_tree:
@@ -82,6 +95,28 @@ func _place_object(body: StaticBody3D, message: Dictionary) -> void:
 	body.position = Vector3(centre_x, TerrainHeightScript.sample(bundle, centre_x, centre_z, message.plane), centre_z)
 	add_child(body)
 	objects[message.entity] = body
+
+func ground_items_at(entity: int) -> Array:
+	var target = objects.get(entity)
+	if target == null or str(target.get_meta("context_kind", "")) != "ground_item":
+		return []
+	var stacks: Array = []
+	for item_entity in objects:
+		var object = objects[item_entity]
+		if str(object.get_meta("context_kind", "")) != "ground_item":
+			continue
+		if object.get_meta("tile_x") != target.get_meta("tile_x") or object.get_meta("tile_z") != target.get_meta("tile_z") or object.get_meta("plane") != target.get_meta("plane"):
+			continue
+		var definition_id := str(object.get_meta("definition_id", ""))
+		var definition = bundle.definition_by_id(definition_id) if bundle != null else null
+		stacks.append({
+			"entity": int(item_entity),
+			"definition_id": definition_id,
+			"name": str(definition.get("name", definition_id)) if definition != null else definition_id,
+			"quantity": int(object.get_meta("quantity", 1)),
+		})
+	stacks.sort_custom(func(a: Dictionary, b: Dictionary): return a.entity < b.entity)
+	return stacks
 
 func _add_stump(tree: StaticBody3D) -> void:
 	var stump := MeshInstance3D.new()

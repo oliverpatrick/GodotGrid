@@ -12,6 +12,7 @@ const INSPECT_INVENTORY := 0x0014
 const USE_INVENTORY := 0x0015
 const USE_WORLD := 0x0016
 const CHAT := 0x0020
+const SET_COMBAT_STYLE := 0x0021
 const CONNECT_ACK := 0x0101
 const ENTITY_SPAWN := 0x0103
 const ENTITY_DESPAWN := 0x0104
@@ -25,6 +26,20 @@ const GROUND_ITEM := 0x0122
 const SYSTEM_MESSAGE := 0x0123
 const RESOURCE_STATE := 0x0124
 const PLAYER_ACTION := 0x0125
+const ENTITY_FACE := 0x0126
+const ENTITY_HEALTH := 0x0127
+const ENTITY_HIT := 0x0128
+const DIALOGUE := 0x0129
+const COMBAT_STYLE := 0x012A
+
+const COMBAT_STYLE_AGGRESSIVE := 0
+const COMBAT_STYLE_DEFENSIVE := 1
+
+const SKILL_HEALTH := 0
+const SKILL_ATTACK := 1
+const SKILL_DEFENCE := 2
+const SKILL_HARVESTING := 3
+const SKILL_PERCEPTION := 4
 
 static func encode_frame(id: int, payload: PackedByteArray) -> PackedByteArray:
 	if payload.size() > MAX_PAYLOAD:
@@ -101,6 +116,11 @@ static func encode_chat(text: String) -> PackedByteArray:
 	payload.append_array(bytes)
 	return encode_frame(CHAT, payload)
 
+static func encode_combat_style(style: int) -> PackedByteArray:
+	if style < COMBAT_STYLE_AGGRESSIVE or style > COMBAT_STYLE_DEFENSIVE:
+		return PackedByteArray()
+	return encode_frame(SET_COMBAT_STYLE, PackedByteArray([style]))
+
 static func decode_message(id: int, payload: PackedByteArray):
 	match id:
 		CONNECT_ACK, ENTITY_DESPAWN:
@@ -141,6 +161,13 @@ static func decode_message(id: int, payload: PackedByteArray):
 			if payload.size() != 9:
 				return null
 			return {"skill": payload[0], "xp": _u64(payload, 1)}
+		GROUND_ITEM:
+			if payload.size() != 8:
+				return null
+			var quantity := _u32(payload, 4)
+			if quantity == 0:
+				return null
+			return {"entity": _u32(payload, 0), "quantity": quantity}
 		SYSTEM_MESSAGE:
 			if payload.is_empty() or payload[0] > 160 or payload.size() != 1 + payload[0]:
 				return null
@@ -150,10 +177,40 @@ static func decode_message(id: int, payload: PackedByteArray):
 				return null
 			return {"entity": _u32(payload, 0), "state": payload[4], "remaining": _u16(payload, 5)}
 		PLAYER_ACTION:
-			if payload.size() != 5 or payload[4] > 1:
+			if payload.size() != 5 or payload[4] > 4:
 				return null
 			return {"entity": _u32(payload, 0), "action": payload[4]}
+		ENTITY_FACE:
+			if payload.size() != 8:
+				return null
+			return {"entity": _u32(payload, 0), "target": _u32(payload, 4)}
+		ENTITY_HEALTH:
+			if payload.size() != 12:
+				return null
+			return {"entity": _u32(payload, 0), "hp": _u32(payload, 4), "maximum": _u32(payload, 8)}
+		ENTITY_HIT:
+			if payload.size() != 8:
+				return null
+			return {"target": _u32(payload, 0), "damage": _u32(payload, 4)}
+		DIALOGUE:
+			if payload.size() < 5 or payload[4] == 0 or payload.size() != 5 + payload[4]:
+				return null
+			var bytes := payload.slice(5)
+			var text = _strict_utf8(bytes)
+			if text == null:
+				return null
+			return {"speaker": _u32(payload, 0), "text": text}
+		COMBAT_STYLE:
+			if payload.size() != 1 or payload[0] > COMBAT_STYLE_DEFENSIVE:
+				return null
+			return {"style": payload[0]}
 	return null
+
+static func _strict_utf8(bytes: PackedByteArray):
+	var text := bytes.get_string_from_utf8()
+	if text.to_utf8_buffer() != bytes:
+		return null
+	return text
 
 static func _put_u16(bytes: PackedByteArray, value: int) -> void:
 	bytes.append((value >> 8) & 0xff)

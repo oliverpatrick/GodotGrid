@@ -10,6 +10,10 @@ var state = HUDStateScript.new()
 @onready var game_tabs: GameTabs = $GameTabs
 @onready var inventory: PanelContainer = game_tabs.inventory
 @onready var chatbox: PanelContainer = $Chatbox
+@onready var dialogue_box: PanelContainer = $DialogueBox
+@onready var health_label: Label = game_tabs.health_label
+@onready var attack_label: Label = game_tabs.attack_label
+@onready var defence_label: Label = game_tabs.defence_label
 @onready var harvesting_label: Label = game_tabs.harvesting_label
 @onready var perception_label: Label = game_tabs.perception_label
 @onready var run_button: Button = $RunButton
@@ -17,6 +21,7 @@ var state = HUDStateScript.new()
 func _ready() -> void:
 	run_button.toggled.connect(_on_run_button_toggled)
 	chatbox.nearby_submitted.connect(func(text: String): get_parent().get_node("InteractionController").send_nearby_chat(text))
+	dialogue_box.closed.connect(_on_dialogue_closed)
 	get_viewport().size_changed.connect(_apply_layout)
 	_apply_layout()
 
@@ -35,6 +40,7 @@ func _apply_layout() -> void:
 	var conversion := Vector2(logical_size.x / window_size.x, logical_size.y / window_size.y)
 	_apply_rect(run_button, _to_logical_rect(layout.run_rect, conversion))
 	_apply_rect(chatbox, _to_logical_rect(layout.chat_rect, conversion))
+	_apply_rect(dialogue_box, Rect2(chatbox.position, chatbox.size))
 
 func _to_logical_rect(rect: Rect2, conversion: Vector2) -> Rect2:
 	return Rect2(rect.position * conversion, rect.size * conversion)
@@ -64,6 +70,9 @@ func handle_message(id: int, message) -> void:
 			inventory.render_slots(state.slots)
 		Protocol.SKILL:
 			state.apply_skill(message.skill, message.xp)
+			health_label.text = "Health\nLevel %d  XP %d" % [state.health_level, state.health_xp]
+			attack_label.text = "Attack\nLevel %d  XP %d" % [state.attack_level, state.attack_xp]
+			defence_label.text = "Defence\nLevel %d  XP %d" % [state.defence_level, state.defence_xp]
 			harvesting_label.text = "Harvesting\nLevel %d  XP %d" % [state.harvesting_level, state.harvesting_xp]
 			perception_label.text = "Perception\nLevel %d  XP %d" % [state.perception_level, state.perception_xp]
 		Protocol.CHAT_MESSAGE:
@@ -72,7 +81,16 @@ func handle_message(id: int, message) -> void:
 			add_system_message(message.text)
 		Protocol.RESOURCE_STATE:
 			state.apply_resource(message.entity, message.state)
+		Protocol.COMBAT_STYLE:
+			game_tabs.acknowledge_combat_style(message.style)
 
 func add_system_message(text: String) -> void:
 	state.add_message(text)
 	chatbox.add_message(text)
+
+func show_dialogue(speaker_name: String, text: String) -> void:
+	chatbox.hide()
+	dialogue_box.show_line(speaker_name, text)
+
+func _on_dialogue_closed() -> void:
+	chatbox.show()

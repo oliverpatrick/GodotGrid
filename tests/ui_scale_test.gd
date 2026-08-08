@@ -12,9 +12,19 @@ static func run() -> bool:
 	var hud_chatbox: Control = hud.get_node("Chatbox")
 	var hud_inventory: Control = hud.get_node_or_null("GameTabs/HSplitContainer/TabContainer/InventoryTab/InventoryPanel")
 	var hud_skills: Control = hud.get_node_or_null("GameTabs/HSplitContainer/TabContainer/SkillsTab")
+	var skill_grid: GridContainer = hud.get_node_or_null("GameTabs/HSplitContainer/TabContainer/SkillsTab/SkillGrid")
 	var scenes_have_expected_hud_structure := (
-		hud_chatbox != null and hud_inventory != null and hud_skills != null
+		hud_chatbox != null and hud_inventory != null and hud_skills != null and skill_grid != null
 	)
+	var expected_skills := ["Health", "Attack", "Defence", "Harvesting", "Perception"]
+	if skill_grid != null:
+		if skill_grid.columns != 2 or skill_grid.get_child_count() != expected_skills.size():
+			scenes_have_expected_hud_structure = false
+		else:
+			for index in range(expected_skills.size()):
+				var label: Label = skill_grid.get_child(index)
+				if label.name != expected_skills[index] or label.custom_minimum_size != Vector2(100, 56):
+					scenes_have_expected_hud_structure = false
 	chatbox.free()
 	inventory.free()
 	hud.free()
